@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Career Nest - HRMS & CRM Portal (Firestore Integrated)</title>
+    <title>Career Nest - HRMS & CRM Portal</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
@@ -156,8 +156,8 @@
                     <i class="fa-solid fa-user-shield w-4 text-cnOrange"></i><span>Super Admin Profile</span>
                 </button>
 
-                <button onclick="showTab('addEmployeePanel')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100">
-                    <i class="fa-solid fa-user-plus w-4 text-emerald-600"></i><span>Add New Employee</span>
+                <button onclick="resetEmployeeForm(); showTab('addEmployeePanel')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100">
+                    <i class="fa-solid fa-user-plus w-4 text-emerald-600"></i><span>Add / Onboard Employee</span>
                 </button>
 
                 <button onclick="showTab('adminAnnounce')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100">
@@ -480,9 +480,21 @@
             <!-- 8. ADD NEW EMPLOYEE (ADMIN ONLY) -->
             <div id="addEmployeePanel" class="tab-content hidden space-y-6">
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                    <h3 class="text-base font-bold text-cnNavy border-b pb-2"><i class="fa-solid fa-user-plus text-emerald-600 mr-2"></i>Add New Employee (Admin Onboarding)</h3>
+                    <h3 class="text-base font-bold text-cnNavy border-b pb-2 flex justify-between items-center">
+                        <span><i class="fa-solid fa-user-plus text-emerald-600 mr-2"></i><span id="empFormTitle">Add New Employee (Admin Onboarding)</span></span>
+                        <input type="hidden" id="editingEmpKey" value="">
+                    </h3>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div>
+                            <label class="font-semibold text-slate-600">Assign System Role *</label>
+                            <select id="newEmpRole" class="w-full border p-2 rounded mt-0.5 bg-amber-50 font-bold text-slate-800">
+                                <option value="EMPLOYEE">EMPLOYEE</option>
+                                <option value="HR_MANAGER">HR MANAGER</option>
+                                <option value="ADMIN">ADMIN</option>
+                                <option value="SUPER_ADMIN">SUPER ADMIN</option>
+                            </select>
+                        </div>
                         <div>
                             <label class="font-semibold text-slate-600">Full Name *</label>
                             <input type="text" id="newEmpName" class="w-full border p-2 rounded mt-0.5" placeholder="Full Name">
@@ -541,9 +553,14 @@
                         </div>
                     </div>
 
-                    <button onclick="handleAdminAddEmployee()" class="bg-cnGreen hover:bg-cnGreen-dark text-white text-xs font-bold py-2.5 px-6 rounded-lg shadow-sm">
-                        Create Employee Record
-                    </button>
+                    <div class="flex gap-2 pt-2">
+                        <button onclick="handleAdminAddEmployee()" class="bg-cnGreen hover:bg-cnGreen-dark text-white text-xs font-bold py-2.5 px-6 rounded-lg shadow-sm">
+                            Save Employee Record
+                        </button>
+                        <button onclick="resetEmployeeForm()" class="bg-slate-300 hover:bg-slate-400 text-slate-800 text-xs font-bold py-2.5 px-4 rounded-lg">
+                            Clear Form
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -655,12 +672,13 @@
                             <thead class="bg-slate-100 text-slate-700">
                                 <tr>
                                     <th class="p-2.5 border">Emp Code</th>
+                                    <th class="p-2.5 border">Role</th>
                                     <th class="p-2.5 border">Name</th>
                                     <th class="p-2.5 border">DOJ</th>
                                     <th class="p-2.5 border">Designation</th>
                                     <th class="p-2.5 border">Mobile ID</th>
                                     <th class="p-2.5 border">Salary Status</th>
-                                    <th class="p-2.5 border">Action</th>
+                                    <th class="p-2.5 border text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="empDirectoryBody" class="divide-y">
@@ -679,12 +697,12 @@
         // 1. FIREBASE CONFIGURATION
         const firebaseConfig = {
             apiKey: "AIzaSyCOqz-8XuCb8MiWX0GYCva5-5GVMt0_MpU",
-  authDomain: "careernest-f0d86.firebaseapp.com",
-  projectId: "careernest-f0d86",
-  storageBucket: "careernest-f0d86.firebasestorage.app",
-  messagingSenderId: "299685180750",
-  appId: "1:299685180750:web:7aa83c497c86843c2b1a1f",
-  measurementId: "G-07DLG375RD"
+            authDomain: "careernest-f0d86.firebaseapp.com",
+            projectId: "careernest-f0d86",
+            storageBucket: "careernest-f0d86.firebasestorage.app",
+            messagingSenderId: "299685180750",
+            appId: "1:299685180750:web:7aa83c497c86843c2b1a1f",
+            measurementId: "G-07DLG375RD"
         };
 
         // Firebase Initialize
@@ -782,7 +800,7 @@
             document.getElementById('navEmpName').innerText = currentUser.name || 'Admin';
             document.getElementById('navEmpRole').innerText = currentUser.role;
 
-            if (currentUser.role === 'SUPER_ADMIN') {
+            if (currentUser.role === 'SUPER_ADMIN' || currentUser.role === 'MASTER_SUPER_ADMIN') {
                 document.getElementById('saName').value = currentUser.name || '';
                 document.getElementById('saFather').value = currentUser.father || '';
                 document.getElementById('saMother').value = currentUser.mother || '';
@@ -876,7 +894,7 @@
             }
         }
 
-        // 2. FIRESTORE - ADD NEW EMPLOYEE
+        // 2. FIRESTORE - ADD / UPDATE EMPLOYEE
         async function handleAdminAddEmployeeFirestore(empData) {
             try {
                 await db.collection("employees").doc(empData.mobile).set({
@@ -893,12 +911,12 @@
                     address: empData.address,
                     bankAcc: empData.bankAcc,
                     ifsc: empData.ifsc,
-                    role: "EMPLOYEE",
-                    isSalarySet: false,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    role: empData.role || "EMPLOYEE",
+                    isSalarySet: empData.isSalarySet || false,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 }, { merge: true });
 
-                console.log("Employee profile successfully created in Firebase Firestore!");
+                console.log("Employee profile successfully synchronized in Firebase Firestore!");
             } catch (error) {
                 console.error("Firestore Error: ", error);
             }
@@ -909,6 +927,8 @@
             const mobile = document.getElementById('newEmpMobile').value.trim();
             const pass = document.getElementById('newEmpPass').value.trim();
             const doj = document.getElementById('newEmpDoj').value;
+            const role = document.getElementById('newEmpRole').value;
+            const editingKey = document.getElementById('editingEmpKey').value;
 
             if (!name || !mobile || !pass || !doj) {
                 alert('Please fill out mandatory fields (Name, Mobile, Password, Date of Joining)!');
@@ -916,11 +936,16 @@
             }
 
             const users = JSON.parse(localStorage.getItem('cn_users')) || {};
-            const empCount = Object.keys(users).length + 101;
-            const newEmpId = `CN-${empCount}`;
+            
+            let empId = `CN-${Object.keys(users).length + 101}`;
+
+            // Check if editing existing user
+            if (editingKey && users[editingKey]) {
+                empId = users[editingKey].empId || empId;
+            }
 
             const empObj = {
-                id: mobile,
+                id: mobile, // CRITICAL FIX: Direct login lookup key set to mobile number
                 pass: pass,
                 name: name,
                 father: document.getElementById('newEmpFather').value,
@@ -935,20 +960,109 @@
                 address: document.getElementById('newEmpAddress').value,
                 bankAcc: document.getElementById('newEmpBankAcc').value,
                 ifsc: document.getElementById('newEmpIfsc').value,
-                role: 'EMPLOYEE',
-                empId: newEmpId,
-                isSalarySet: false
+                role: role,
+                empId: empId,
+                isSalarySet: (editingKey && users[editingKey]) ? users[editingKey].isSalarySet : false
             };
 
+            // Maintain salary details if editing
+            if (editingKey && users[editingKey] && users[editingKey].isSalarySet) {
+                Object.assign(empObj, {
+                    basicSalary: users[editingKey].basicSalary,
+                    hra: users[editingKey].hra,
+                    conv: users[editingKey].conv,
+                    petrol: users[editingKey].petrol,
+                    otherAllow: users[editingKey].otherAllow,
+                    incentive: users[editingKey].incentive,
+                    bonus: users[editingKey].bonus,
+                    pf: users[editingKey].pf,
+                    esi: users[editingKey].esi,
+                    insurance: users[editingKey].insurance,
+                    loan: users[editingKey].loan,
+                    pt: users[editingKey].pt,
+                    tds: users[editingKey].tds,
+                    otherDed: users[editingKey].otherDed,
+                    target: users[editingKey].target
+                });
+            }
+
+            // Save under mobile key so login lookup succeeds
             users[mobile] = empObj;
             localStorage.setItem('cn_users', JSON.stringify(users));
 
             // Sync with Firestore Cloud Database
             handleAdminAddEmployeeFirestore(empObj);
 
-            alert(`Employee Onboarding Successful! Assigned Emp Code: ${newEmpId}`);
+            alert(editingKey ? `Employee Details Updated Successfully!` : `Employee Onboarding Successful! Assigned Emp Code: ${empId}`);
+            resetEmployeeForm();
             renderEmployeeDirectory();
             showTab('employeeList');
+        }
+
+        function editEmployeeProfile(mobile) {
+            const users = JSON.parse(localStorage.getItem('cn_users')) || {};
+            const u = users[mobile];
+
+            if (!u) return alert('Employee record not found!');
+
+            document.getElementById('empFormTitle').innerText = `Edit Profile - ${u.name} (${u.empId || mobile})`;
+            document.getElementById('editingEmpKey').value = mobile;
+
+            document.getElementById('newEmpRole').value = u.role || 'EMPLOYEE';
+            document.getElementById('newEmpName').value = u.name || '';
+            document.getElementById('newEmpFather').value = u.father || '';
+            document.getElementById('newEmpMother').value = u.mother || '';
+            document.getElementById('newEmpDob').value = u.dob || '';
+            document.getElementById('newEmpDoj').value = u.doj || '';
+            document.getElementById('newEmpMobile').value = u.mobile || u.id || '';
+            document.getElementById('newEmpEmail').value = u.email || '';
+            document.getElementById('newEmpPass').value = u.pass || '';
+            document.getElementById('newEmpDesig').value = u.desig || '';
+            document.getElementById('newEmpAadhaar').value = u.aadhaar || '';
+            document.getElementById('newEmpPan').value = u.pan || '';
+            document.getElementById('newEmpAddress').value = u.address || '';
+            document.getElementById('newEmpBankAcc').value = u.bankAcc || '';
+            document.getElementById('newEmpIfsc').value = u.ifsc || '';
+
+            showTab('addEmployeePanel');
+        }
+
+        function deleteEmployeeRecord(mobile) {
+            const users = JSON.parse(localStorage.getItem('cn_users')) || {};
+            if (users[mobile]) {
+                if (confirm(`Are you sure you want to delete employee record for ${users[mobile].name}?`)) {
+                    delete users[mobile];
+                    localStorage.setItem('cn_users', JSON.stringify(users));
+
+                    // Firestore Delete
+                    db.collection("employees").doc(mobile).delete().then(() => {
+                        console.log("Deleted from Firestore");
+                    }).catch(err => console.error("Firestore Delete Error:", err));
+
+                    alert('Employee deleted successfully.');
+                    renderEmployeeDirectory();
+                }
+            }
+        }
+
+        function resetEmployeeForm() {
+            document.getElementById('empFormTitle').innerText = 'Add New Employee (Admin Onboarding)';
+            document.getElementById('editingEmpKey').value = '';
+            document.getElementById('newEmpRole').value = 'EMPLOYEE';
+            document.getElementById('newEmpName').value = '';
+            document.getElementById('newEmpFather').value = '';
+            document.getElementById('newEmpMother').value = '';
+            document.getElementById('newEmpDob').value = '';
+            document.getElementById('newEmpDoj').value = '';
+            document.getElementById('newEmpMobile').value = '';
+            document.getElementById('newEmpEmail').value = '';
+            document.getElementById('newEmpPass').value = '';
+            document.getElementById('newEmpDesig').value = '';
+            document.getElementById('newEmpAadhaar').value = '';
+            document.getElementById('newEmpPan').value = '';
+            document.getElementById('newEmpAddress').value = '';
+            document.getElementById('newEmpBankAcc').value = '';
+            document.getElementById('newEmpIfsc').value = '';
         }
 
         function saveSuperAdminProfile() {
@@ -976,14 +1090,14 @@
             const tbody = document.getElementById('empDirectoryBody');
             tbody.innerHTML = '';
 
-            const employeesOnly = Object.values(users).filter(u => u.role === 'EMPLOYEE');
+            const allStaff = Object.values(users).filter(u => u.role !== 'MASTER_SUPER_ADMIN');
 
-            if (employeesOnly.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-400">No employees registered yet. Use "Add New Employee" panel.</td></tr>`;
+            if (allStaff.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-slate-400">No staff/employees registered yet. Use "Add New Employee" panel.</td></tr>`;
                 return;
             }
 
-            employeesOnly.forEach(u => {
+            allStaff.forEach(u => {
                 const isSet = u.isSalarySet;
                 const salaryBadge = isSet 
                     ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">Basic: ₹${u.basicSalary || 0} (Active)</span>`
@@ -992,14 +1106,21 @@
                 tbody.innerHTML += `
                     <tr>
                         <td class="p-2.5 border font-bold">${u.empId || '--'}</td>
-                        <td class="p-2.5 border">${u.name}</td>
+                        <td class="p-2.5 border"><span class="bg-slate-100 text-slate-800 text-[10px] font-bold px-2 py-0.5 rounded border">${u.role || 'EMPLOYEE'}</span></td>
+                        <td class="p-2.5 border font-bold text-slate-800">${u.name}</td>
                         <td class="p-2.5 border">${u.doj || '--'}</td>
                         <td class="p-2.5 border">${u.desig || 'Executive'}</td>
-                        <td class="p-2.5 border">${u.mobile || u.id}</td>
+                        <td class="p-2.5 border font-mono">${u.mobile || u.id}</td>
                         <td class="p-2.5 border">${salaryBadge}</td>
-                        <td class="p-2.5 border">
-                            <button onclick="openSalarySetup('${u.mobile}')" class="bg-cnOrange text-white px-2.5 py-1 rounded text-[10px] font-bold hover:bg-cnOrange-dark">
-                                Edit Salary / Incentive
+                        <td class="p-2.5 border text-center space-x-1">
+                            <button onclick="editEmployeeProfile('${u.mobile || u.id}')" title="Edit Profile & Role" class="bg-blue-600 text-white px-2 py-1 rounded text-[10px] font-bold hover:bg-blue-700">
+                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                            </button>
+                            <button onclick="openSalarySetup('${u.mobile || u.id}')" title="Configure Salary & Target" class="bg-cnOrange text-white px-2 py-1 rounded text-[10px] font-bold hover:bg-cnOrange-dark">
+                                <i class="fa-solid fa-indian-rupee-sign"></i> Salary
+                            </button>
+                            <button onclick="deleteEmployeeRecord('${u.mobile || u.id}')" title="Delete Account" class="bg-rose-600 text-white px-2 py-1 rounded text-[10px] font-bold hover:bg-rose-700">
+                                <i class="fa-solid fa-trash"></i>
                             </button>
                         </td>
                     </tr>

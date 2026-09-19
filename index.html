@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Nest - HRMS & Admin Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cnNavy: { DEFAULT: '#0A2540', dark: '#061729', light: '#1E3A8A' },
+                        cnGreen: { DEFAULT: '#1E7E34', light: '#28A745' },
+                        idPurple: { DEFAULT: '#7E22CE', dark: '#581C87', light: '#A855F7' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            .printable-area, .printable-area * { visibility: visible; }
+            .printable-area { position: absolute; left: 0; top: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 font-sans min-h-screen flex flex-col text-slate-800">
+
+    <!-- ANNOUNCEMENT POPUP MODAL -->
+    <div id="announcementModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border-t-4 border-cnGreen">
+            <div class="flex items-center space-x-3 text-cnGreen mb-3">
+                <i class="fa-solid fa-bullhorn text-2xl"></i>
+                <h3 class="text-lg font-bold text-slate-800">Company Announcement</h3>
+            </div>
+            <p id="announcementPopupText" class="text-sm text-slate-600 mb-6 bg-slate-50 p-3 rounded-lg border">Welcome to Career Nest HRMS System.</p>
+            <button onclick="closeAnnouncementModal()" class="w-full bg-cnNavy hover:bg-cnNavy-light text-white text-xs font-bold py-2.5 rounded-lg shadow">Acknowledge & Close</button>
+        </div>
+    </div>
+
+    <!-- AUTHENTICATION MODAL (LOGIN & REGISTRATION) -->
+    <div id="authModal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 border border-slate-200">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 mx-auto bg-cnNavy rounded-full flex items-center justify-center text-white font-bold text-xl mb-2">CN</div>
+                <h2 class="text-xl font-extrabold text-cnNavy tracking-wide">CAREER NEST</h2>
+                <p class="text-[10px] text-cnGreen font-bold uppercase tracking-widest">Nurture Today, Achieve Tomorrow</p>
+            </div>
+
+            <!-- LOGIN -->
+            <div id="loginSection" class="space-y-4">
+                <h3 class="text-sm font-bold text-slate-700 border-b pb-2">Portal Login</h3>
+                <div>
+                    <label class="text-xs font-semibold text-slate-600">User ID (Mobile No. / Email)</label>
+                    <input type="text" id="loginUser" placeholder="Enter Mobile No or Email" class="w-full mt-1 border text-xs rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-cnNavy">
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-slate-600">Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" class="w-full mt-1 border text-xs rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-cnNavy">
+                </div>
+                <button onclick="handleLogin()" class="w-full bg-cnNavy hover:bg-cnNavy-light text-white text-xs font-bold py-3 rounded-lg shadow transition-all">
+                    Login to Dashboard
+                </button>
+                <div class="text-center pt-2">
+                    <button onclick="toggleAuth('register')" class="text-xs text-cnGreen font-bold hover:underline">New Employee Joining Registration</button>
+                </div>
+            </div>
+
+            <!-- REGISTRATION FORM -->
+            <div id="registerSection" class="hidden space-y-3 max-h-[70vh] overflow-y-auto pr-2">
+                <h3 class="text-sm font-bold text-slate-800 border-b pb-2">Employee Onboarding Form</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <label class="font-semibold text-slate-600">Full Name *</label>
+                        <input type="text" id="regName" class="w-full border p-2 rounded mt-0.5" placeholder="Full Name">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-600">Father's Name *</label>
+                        <input type="text" id="regFather" class="w-full border p-2 rounded mt-0.5" placeholder="Father Name">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-600">Mother's Name *</label>
+                        <input type="text" id="regMother" class="w-full border p-2 rounded mt-0.5" placeholder="Mother Name">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-600">Date of Birth (DOB) *</label>
+                        <input type="date" id="regDob" class="w-full border p-2 rounded mt-0.5">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-600">Mobile Number (Login ID) *</label>
+                        <input type="text" id="regMobile" class="w-full border p-2 rounded mt-0.5" placeholder="Mobile Number">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-600">Email Address *</label>
+                        <input type="email" id="regEmail" class="w-full border p-2 rounded mt-0.5" placeholder="user@domain.com">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-600">Password *</label>
+                        <input type="password" id="regPass" class="w-full border p-2 rounded mt-0.5" placeholder="••••••••">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-600">Designation *</label>
+                        <input type="text" id="regDesig" class="w-full border p-2 rounded mt-0.5" placeholder="Field Executive">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-600">Blood Group</label>
+                        <input type="text" id="regBlood" class="w-full border p-2 rounded mt-0.5" placeholder="O+">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-600">Aadhaar Number *</label>
+                        <input type="text" id="regAadhaar" class="w-full border p-2 rounded mt-0.5" placeholder="12 Digit Aadhaar">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-600">PAN Number *</label>
+                        <input type="text" id="regPan" class="w-full border p-2 rounded mt-0.5" placeholder="ABCDE1234F">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="font-semibold text-slate-600">Full Address *</label>
+                        <input type="text" id="regAddress" class="w-full border p-2 rounded mt-0.5" placeholder="House No, Street, Landmark">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-600">City / District *</label>
+                        <input type="text" id="regCity" class="w-full border p-2 rounded mt-0.5" placeholder="Jabalpur">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-600">State / Pincode *</label>
+                        <input type="text" id="regStatePin" class="w-full border p-2 rounded mt-0.5" placeholder="MP - 482002">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-600">Bank Account No.</label>
+                        <input type="text" id="regBankAcc" class="w-full border p-2 rounded mt-0.5" placeholder="Account Number">
+                    </div>
+                    <div>
+                        <label class="font-semibold text-slate-600">IFSC Code</label>
+                        <input type="text" id="regIfsc" class="w-full border p-2 rounded mt-0.5" placeholder="SBIN0001234">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="font-semibold text-slate-600">Profile Photo Upload</label>
+                        <input type="file" id="regPhoto" accept="image/*" class="w-full border p-1 rounded mt-0.5 text-xs" onchange="previewFilePhoto(event)">
+                    </div>
+                </div>
+                <button onclick="handleRegister()" class="w-full bg-idPurple hover:bg-idPurple-dark text-white text-xs font-bold py-2.5 rounded-lg shadow mt-2">
+                    Submit & Generate Profile
+                </button>
+                <div class="text-center">
+                    <button onclick="toggleAuth('login')" class="text-xs text-cnNavy font-bold hover:underline">Back to Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="bg-cnNavy text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white text-cnNavy font-extrabold rounded-lg flex items-center justify-center text-sm shrink-0">CN</div>
+                <div>
+                    <h1 class="text-base font-bold tracking-wide">CAREER NEST</h1>
+                    <p class="text-[9px] text-cnGreen-light font-bold uppercase tracking-widest">Nurture Today, Achieve Tomorrow</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-4 text-xs">
+                <div class="hidden md:flex bg-cnNavy-dark px-3 py-1.5 rounded-full border border-slate-700 items-center space-x-2">
+                    <i class="fa-regular fa-clock text-cnGreen-light"></i>
+                    <span id="liveClock">Loading Clock...</span>
+                </div>
+
+                <div class="flex items-center space-x-3 border-l border-slate-700 pl-3">
+                    <img id="navPhoto" src="https://ui-avatars.com/api/?name=User" class="w-8 h-8 rounded-full object-cover border border-cnGreen-light">
+                    <div class="hidden sm:block text-right">
+                        <p id="navEmpName" class="font-bold text-white leading-none">Inaam Khan</p>
+                        <p id="navEmpRole" class="text-[10px] text-cnGreen-light font-semibold">SUPER_ADMIN</p>
+                    </div>
+                </div>
+
+                <button onclick="attemptLogout()" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg font-bold transition"><i class="fa-solid fa-power-off"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN BODY CONTAINER -->
+    <div class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
+
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="w-full md:w-64 bg-slate-800 text-white rounded-2xl shadow-sm border border-slate-700 p-4 shrink-0 h-fit space-y-2">
+            <div class="text-center pb-3 border-b border-slate-700">
+                <div class="w-16 h-16 bg-cnGreen rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-2">CN</div>
+                <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Dashboard Menu</h3>
+            </div>
+
+            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider px-3 pt-2">Main Menu</p>
+
+            <button onclick="showTab('dashboard')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-bold bg-cnNavy text-white">
+                <i class="fa-solid fa-chart-pie w-4 text-cnGreen-light"></i><span>Dashboard Overview</span>
+            </button>
+
+            <button onclick="showTab('attendance')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-700">
+                <i class="fa-solid fa-camera w-4 text-slate-400"></i><span>Selfie Attendance</span>
+            </button>
+
+            <button onclick="showTab('idCard')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-700">
+                <i class="fa-solid fa-id-card w-4 text-slate-400"></i><span>Digital ID Card</span>
+            </button>
+
+            <button onclick="showTab('targets')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-700">
+                <i class="fa-solid fa-bullseye w-4 text-slate-400"></i><span>Targets & Daily Logs</span>
+            </button>
+
+            <button onclick="showTab('payroll')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-700">
+                <i class="fa-solid fa-file-invoice-dollar w-4 text-slate-400"></i><span>Salary Slip & Payslip</span>
+            </button>
+
+            <button onclick="showTab('requests')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-700">
+                <i class="fa-solid fa-receipt w-4 text-slate-400"></i><span>Leaves & Expenses</span>
+            </button>
+
+            <!-- ADMIN / SUPER ADMIN CONTROLS -->
+            <div id="adminMenuGroup" class="pt-3 border-t border-slate-700 mt-2 space-y-1">
+                <p class="text-[10px] font-extrabold text-cnGreen-light uppercase tracking-wider px-3 mb-1">Administrative Controls</p>
+
+                <button onclick="showTab('adminAnnounce')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-semibold text-slate-200 hover:bg-slate-700">
+                    <i class="fa-solid fa-bullhorn w-4 text-cnGreen-light"></i><span>Announcements</span>
+                </button>
+
+                <button onclick="showTab('adminSalary')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-semibold text-slate-200 hover:bg-slate-700">
+                    <i class="fa-solid fa-sliders w-4 text-amber-400"></i><span>Salary & Target Master</span>
+                </button>
+
+                <button onclick="showTab('employeeList')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-semibold text-slate-200 hover:bg-slate-700">
+                    <i class="fa-solid fa-users-gear w-4 text-purple-400"></i><span>Employee Directory</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN PANEL AREA -->
+        <main class="flex-1 space-y-6">
+
+            <!-- 1. DASHBOARD OVERVIEW -->
+            <div id="dashboard" class="tab-content space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="flex items-center space-x-4">
+                        <img id="dashProfilePic" src="https://ui-avatars.com/api/?name=User" class="w-16 h-16 rounded-2xl object-cover border-2 border-cnNavy shadow">
+                        <div>
+                            <h2 class="text-xl font-bold text-cnNavy"><span id="dashName">User</span></h2>
+                            <p class="text-xs text-slate-500">Emp ID: <span id="dashEmpId" class="font-bold text-slate-700">--</span> | Role: <span id="dashRole" class="font-bold text-cnGreen">--</span></p>
+                            <p class="text-[11px] text-slate-400 mt-0.5"><i class="fa-solid fa-phone text-slate-400 mr-1"></i><span id="dashMobile">--</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
+                        <div class="p-3 bg-blue-50 text-blue-600 rounded-lg"><i class="fa-solid fa-calendar-check text-lg"></i></div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Duty Hours Today</p>
+                            <h3 id="dutyTimerDisplay" class="text-lg font-bold text-slate-800">00h 00m 00s</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
+                        <div class="p-3 bg-emerald-50 text-emerald-600 rounded-lg"><i class="fa-solid fa-bullseye text-lg"></i></div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Target Balance</p>
+                            <h3 id="dashTargetRem" class="text-lg font-bold text-slate-800">0 Left</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
+                        <div class="p-3 bg-amber-50 text-amber-600 rounded-lg"><i class="fa-solid fa-indian-rupee-sign text-lg"></i></div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Monthly Base Salary</p>
+                            <h3 id="dashBaseSalary" class="text-lg font-bold text-slate-800">Not Set</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
+                        <div class="p-3 bg-purple-50 text-purple-600 rounded-lg"><i class="fa-solid fa-gift text-lg"></i></div>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Incentive Earned</p>
+                            <h3 id="dashIncentive" class="text-lg font-bold text-slate-800">₹ 0</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. SELFIE ATTENDANCE -->
+            <div id="attendance" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-base font-bold text-cnNavy border-b pb-2"><i class="fa-solid fa-camera text-cnGreen mr-2"></i>Selfie Attendance & 8-Hour Work Shift</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div class="aspect-video bg-slate-900 rounded-xl overflow-hidden relative flex items-center justify-center">
+                                <video id="webcam" autoplay playsinline class="w-full h-full object-cover hidden"></video>
+                                <img id="capturedSelfie" src="https://via.placeholder.com/400x300?text=Camera+Preview" class="w-full h-full object-cover">
+                            </div>
+
+                            <div class="flex gap-2">
+                                <button onclick="startCamera()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold py-2 rounded-lg"><i class="fa-solid fa-video mr-1"></i> Open Camera</button>
+                                <button onclick="takeSelfie()" class="flex-1 bg-idPurple hover:bg-idPurple-dark text-white text-xs font-bold py-2 rounded-lg"><i class="fa-solid fa-camera mr-1"></i> Capture Photo</button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs">
+                            <h4 class="font-bold text-slate-800">Shift & Attendance Rules:</h4>
+                            <ul class="list-disc pl-4 space-y-1 text-slate-600">
+                                <li>Duty requires a mandatory minimum of <strong>8 hours</strong> active shift.</li>
+                                <li>Selfie attendance marks your check-in time accurately.</li>
+                            </ul>
+
+                            <div class="border-t pt-3 space-y-2">
+                                <p><strong>Status:</strong> <span id="attStatusText" class="text-rose-600 font-bold">OFF-DUTY</span></p>
+                                <p><strong>Check-In Time:</strong> <span id="attCheckInTime">--:--</span></p>
+                                <p><strong>Shift Timer:</strong> <span id="attTimer" class="font-mono font-bold text-cnNavy">00:00:00</span></p>
+                            </div>
+
+                            <button id="checkInBtn" onclick="toggleShiftCheckIn()" class="w-full bg-cnGreen hover:bg-cnGreen-light text-white font-bold py-3 rounded-lg shadow text-xs">
+                                Check-In (Start 8-Hour Duty)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. DIGITAL ID CARD -->
+            <div id="idCard" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <h3 class="text-base font-bold text-cnNavy"><i class="fa-solid fa-id-card text-idPurple mr-2"></i>Official Corporate ID Card</h3>
+                        <button onclick="window.print()" class="bg-idPurple hover:bg-idPurple-dark text-white text-xs px-3 py-1.5 rounded-lg font-bold"><i class="fa-solid fa-print mr-1"></i> Print ID Card</button>
+                    </div>
+
+                    <div class="printable-area flex flex-wrap justify-center gap-8 py-6 bg-slate-100 rounded-xl">
+                        <!-- FRONT -->
+                        <div class="w-[300px] h-[480px] bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-200 relative flex flex-col justify-between">
+                            <div class="bg-gradient-to-br from-idPurple-dark via-idPurple to-idPurple-light h-36 p-4 text-white relative rounded-b-[40%] flex flex-col items-center">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-7 h-7 bg-white text-idPurple font-bold rounded flex items-center justify-center text-xs">CN</div>
+                                    <span class="font-extrabold tracking-wider text-sm">CAREER NEST</span>
+                                </div>
+                            </div>
+                            <div class="absolute top-20 left-1/2 -translate-x-1/2">
+                                <img id="idFrontPhoto" src="https://ui-avatars.com/api/?name=User" class="w-28 h-28 rounded-full border-4 border-white shadow-md object-cover bg-white">
+                            </div>
+                            <div class="pt-16 pb-6 px-6 text-center space-y-1">
+                                <h2 id="idFrontName" class="text-base font-extrabold text-slate-800">--</h2>
+                                <p id="idFrontDesig" class="text-xs font-semibold text-idPurple mb-4">--</p>
+
+                                <div class="text-left text-[11px] space-y-1.5 text-slate-600 bg-slate-50 p-3 rounded-xl border">
+                                    <p class="flex justify-between"><strong>ID No:</strong> <span id="idFrontEmpId">--</span></p>
+                                    <p class="flex justify-between"><strong>Blood Group:</strong> <span id="idFrontBlood">--</span></p>
+                                    <p class="flex justify-between"><strong>Phone:</strong> <span id="idFrontPhone">--</span></p>
+                                    <p class="flex justify-between"><strong>Email:</strong> <span id="idFrontEmail" class="truncate max-w-[140px]">--</span></p>
+                                </div>
+                            </div>
+                            <div class="bg-gradient-to-r from-idPurple-dark to-idPurple h-6 w-full"></div>
+                        </div>
+
+                        <!-- BACK -->
+                        <div class="w-[300px] h-[480px] bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-200 relative flex flex-col justify-between">
+                            <div class="bg-gradient-to-br from-idPurple-dark via-idPurple to-idPurple-light h-16 p-3 text-white flex items-center justify-center">
+                                <p class="text-xs font-bold uppercase tracking-widest">Terms & Conditions</p>
+                            </div>
+                            <div class="p-5 text-[10px] space-y-3 text-slate-600">
+                                <ul class="list-disc pl-3 space-y-1 text-justify leading-tight">
+                                    <li>This card is the exclusive property of CAREER NEST.</li>
+                                    <li>If found, please return to company address immediately.</li>
+                                </ul>
+
+                                <div class="border-t pt-2 space-y-1 bg-slate-50 p-2.5 rounded-lg border">
+                                    <p><strong>Join Date:</strong> <span id="idBackDoj">--</span></p>
+                                    <p><strong>Expire Date:</strong> <span id="idBackExpiry">--</span></p>
+                                    <p><strong>DOB:</strong> <span id="idBackDob">--</span></p>
+                                </div>
+
+                                <div class="text-center pt-2">
+                                    <p class="font-extrabold text-slate-800 text-[11px]">Mohd Zafar Ali</p>
+                                    <p class="text-[8px] text-slate-400 uppercase tracking-wider font-semibold">Authorized Signatory</p>
+                                </div>
+
+                                <div class="text-center text-[9px] text-slate-500 border-t pt-2">
+                                    <p class="font-bold text-slate-700">Company Address:</p>
+                                    <p>426/1 second floor infront of bank of india labour chowk yadav colony jabalpur mp 482002</p>
+                                    <p class="font-bold mt-0.5">Phone: 9111319711</p>
+                                </div>
+                            </div>
+                            <div class="bg-gradient-to-r from-idPurple to-idPurple-dark h-6 w-full flex items-center justify-center text-white font-bold text-[10px]">CAREER NEST</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. TARGETS & DAILY WORK LOGS -->
+            <div id="targets" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                    <h3 class="text-base font-bold text-cnNavy border-b pb-2"><i class="fa-solid fa-bullseye text-cnGreen mr-2"></i>CRM Target Tracker & Work Logger</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-slate-50 p-4 rounded-xl border text-center">
+                            <p class="text-xs text-slate-500 font-bold uppercase">Assigned Monthly Target</p>
+                            <h2 id="targetAssigned" class="text-2xl font-black text-cnNavy mt-1">100</h2>
+                        </div>
+                        <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200 text-center">
+                            <p class="text-xs text-emerald-700 font-bold uppercase">Completed Work</p>
+                            <h2 id="targetCompleted" class="text-2xl font-black text-emerald-600 mt-1">0</h2>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 text-center">
+                            <p class="text-xs text-amber-700 font-bold uppercase">Remaining Target</p>
+                            <h2 id="targetRemaining" class="text-2xl font-black text-amber-600 mt-1">100</h2>
+                        </div>
+                    </div>
+
+                    <div class="border-t pt-4 space-y-3">
+                        <h4 class="text-xs font-bold text-slate-800">Add Daily Work Log / Follow-up</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                            <input type="text" id="logClient" placeholder="Client Name" class="border p-2 rounded-lg">
+                            <input type="text" id="logDetails" placeholder="Work Summary" class="border p-2 rounded-lg">
+                            <input type="number" id="logUnits" placeholder="Units Completed" class="border p-2 rounded-lg">
+                        </div>
+                        <button onclick="submitWorkLog()" class="bg-cnGreen hover:bg-cnGreen-light text-white text-xs font-bold py-2 px-5 rounded-lg shadow">Save Log & Update Target</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. PAYROLL & SALARY SLIP (LOCKED CONDITION IMPLEMENTED) -->
+            <div id="payroll" class="tab-content hidden space-y-6">
+                
+                <!-- SALARY UNSET / LOCKED STATE -->
+                <div id="salaryLockedView" class="hidden bg-amber-50 border-2 border-amber-300 p-8 rounded-2xl text-center space-y-3">
+                    <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-2xl">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-amber-800">Salary Slip Access Restricted</h3>
+                    <p class="text-xs text-amber-700 max-w-md mx-auto">
+                        Aapki salary structure abhi tak Super Admin dwara finalize nahi hui hai. Super Admin dwara Salary Configuration set kiye jane ke baad aapka Salary Slip yahan active ho jayega.
+                    </p>
+                </div>
+
+                <!-- SALARY SET / ACTIVE PAYSLIP VIEW -->
+                <div id="salaryActiveView" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <h3 class="text-base font-bold text-cnNavy"><i class="fa-solid fa-file-invoice-dollar text-cnGreen mr-2"></i>Corporate Salary Statement</h3>
+                        <button onclick="window.print()" class="bg-cnNavy hover:bg-cnNavy-light text-white text-xs px-3 py-1.5 rounded-lg font-bold"><i class="fa-solid fa-print mr-1"></i> Print Payslip</button>
+                    </div>
+
+                    <div class="printable-area border p-6 rounded-2xl bg-white space-y-4 text-xs">
+                        <div class="flex justify-between items-center border-b pb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-cnNavy text-white font-black rounded-lg flex items-center justify-center text-lg">CN</div>
+                                <div>
+                                    <h2 class="text-lg font-extrabold text-cnNavy">CAREER NEST</h2>
+                                    <p class="text-[9px] text-cnGreen font-bold uppercase">Nurture Today, Achieve Tomorrow</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <h3 class="font-bold text-slate-700">Salary Slip</h3>
+                                <p class="text-[10px] text-slate-400">Generated On: 19/09/2026</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-3 rounded-xl border text-[11px]">
+                            <p><strong>Employee ID:</strong> <span id="slipEmpId">--</span></p>
+                            <p><strong>Name:</strong> <span id="slipName">--</span></p>
+                            <p><strong>Designation:</strong> <span id="slipDesig">--</span></p>
+                            <p><strong>Bank Acc:</strong> <span id="slipAcc">--</span></p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <table class="w-full border text-left rounded-lg overflow-hidden">
+                                <thead class="bg-emerald-100 text-emerald-900 font-bold">
+                                    <tr><th class="p-2">Earnings & Incentives</th><th class="p-2 text-right">Amount (₹)</th></tr>
+                                </thead>
+                                <tbody class="divide-y text-slate-700">
+                                    <tr><td class="p-2">Base Monthly Salary</td><td class="p-2 text-right" id="slipBase">₹ 0</td></tr>
+                                    <tr><td class="p-2">Target Incentive</td><td class="p-2 text-right text-emerald-600 font-bold" id="slipIncentive">₹ 0</td></tr>
+                                </tbody>
+                            </table>
+
+                            <table class="w-full border text-left rounded-lg overflow-hidden">
+                                <thead class="bg-rose-100 text-rose-900 font-bold">
+                                    <tr><th class="p-2">Deductions</th><th class="p-2 text-right">Amount (₹)</th></tr>
+                                </thead>
+                                <tbody class="divide-y text-slate-700">
+                                    <tr><td class="p-2">Provident Fund (PF)</td><td class="p-2 text-right" id="slipPf">₹ 0</td></tr>
+                                    <tr><td class="p-2">ESI / Insurance</td><td class="p-2 text-right" id="slipEsi">₹ 0</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-cnNavy text-white p-4 rounded-xl flex justify-between items-center text-sm font-bold">
+                            <span>NET PAYABLE SALARY</span>
+                            <span id="slipNetPay" class="text-base text-cnGreen-light">₹ 0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. LEAVES & EXPENSES -->
+            <div id="requests" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                    <h3 class="text-base font-bold text-cnNavy border-b pb-2"><i class="fa-solid fa-receipt text-cnGreen mr-2"></i>Leaves & Claims</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="border p-4 rounded-xl space-y-3 bg-slate-50">
+                            <h4 class="text-xs font-bold text-slate-800">Apply for Leave</h4>
+                            <input type="date" id="leaveDate" class="w-full border p-2 rounded text-xs">
+                            <textarea id="leaveReason" placeholder="Reason for Leave" class="w-full border p-2 rounded text-xs" rows="2"></textarea>
+                            <button onclick="alert('Leave Request Submitted!')" class="w-full bg-cnNavy text-white text-xs font-bold py-2 rounded">Submit Request</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADMIN PANELS -->
+
+            <!-- 7. ADMIN ANNOUNCEMENT -->
+            <div id="adminAnnounce" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-base font-bold text-cnNavy border-b pb-2"><i class="fa-solid fa-bullhorn text-cnGreen mr-2"></i>Broadcast Announcement</h3>
+                    <div class="space-y-3 text-xs">
+                        <textarea id="adminAnnounceInput" placeholder="Type company announcement message..." class="w-full border p-2 rounded-lg" rows="3"></textarea>
+                        <button onclick="publishAnnouncement()" class="bg-cnGreen text-white font-bold py-2 px-5 rounded-lg">Publish Announcement</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. ADMIN SALARY MASTER CONTROL -->
+            <div id="adminSalary" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-base font-bold text-cnNavy border-b pb-2"><i class="fa-solid fa-sliders text-cnGreen mr-2"></i>Set Employee Salary & Target Master</h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+                        <div>
+                            <label class="font-semibold text-slate-600">Employee Mobile (Login ID) *</label>
+                            <input type="text" id="masterEmpId" placeholder="e.g. 9111319711" class="w-full border p-2 rounded mt-1 font-bold bg-slate-50">
+                        </div>
+                        <div>
+                            <label class="font-semibold text-slate-600">Base Monthly Salary (₹) *</label>
+                            <input type="number" id="masterBaseSalary" placeholder="25000" class="w-full border p-2 rounded mt-1">
+                        </div>
+                        <div>
+                            <label class="font-semibold text-slate-600">Monthly Target Units</label>
+                            <input type="number" id="masterTarget" placeholder="100" class="w-full border p-2 rounded mt-1">
+                        </div>
+                        <div>
+                            <label class="font-semibold text-slate-600">Incentive Amount (₹)</label>
+                            <input type="number" id="masterIncentive" placeholder="5000" class="w-full border p-2 rounded mt-1">
+                        </div>
+                        <div>
+                            <label class="font-semibold text-slate-600">PF Deduction (₹)</label>
+                            <input type="number" id="masterPf" placeholder="1800" class="w-full border p-2 rounded mt-1">
+                        </div>
+                        <div>
+                            <label class="font-semibold text-slate-600">ESI Deduction (₹)</label>
+                            <input type="number" id="masterEsi" placeholder="500" class="w-full border p-2 rounded mt-1">
+                        </div>
+                    </div>
+
+                    <button onclick="saveMasterSalaryConfig()" class="bg-cnGreen hover:bg-cnGreen-light text-white text-xs font-bold py-2.5 px-6 rounded-lg shadow">
+                        Set & Activate Employee Salary
+                    </button>
+                </div>
+            </div>
+
+            <!-- 9. SUPER ADMIN EMPLOYEE DIRECTORY -->
+            <div id="employeeList" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <h3 class="text-base font-bold text-cnNavy"><i class="fa-solid fa-users text-slate-500 mr-2"></i>Corporate Employee Directory</h3>
+                        <button onclick="renderEmployeeDirectory()" class="text-xs bg-slate-100 hover:bg-slate-200 font-bold px-3 py-1 rounded text-slate-700"><i class="fa-solid fa-rotate mr-1"></i> Refresh List</button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border border-slate-200 rounded-lg">
+                            <thead class="bg-slate-100 text-slate-700">
+                                <tr>
+                                    <th class="p-2.5 border">Emp ID</th>
+                                    <th class="p-2.5 border">Name</th>
+                                    <th class="p-2.5 border">Designation</th>
+                                    <th class="p-2.5 border">Mobile ID</th>
+                                    <th class="p-2.5 border">Salary Status</th>
+                                    <th class="p-2.5 border">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="empDirectoryBody" class="divide-y">
+                                <!-- Dynamic rows populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        function formatDate(date) {
+            if (!date) return '--';
+            const d = new Date(date);
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        const SUPER_ADMIN = {
+            id: '9111319711',
+            pass: 'Inaam@786',
+            name: 'Inaam Khan',
+            role: 'SUPER_ADMIN',
+            empId: 'CN-SA-001',
+            mobile: '9111319711',
+            email: 'careernestorg@gmail.com',
+            dob: '1995-08-15',
+            doj: '2026-01-01',
+            expiry: '2027-01-01',
+            isSalarySet: true,
+            baseSalary: 100000,
+            target: 50,
+            completedTarget: 10,
+            incentive: 10000,
+            pf: 1800,
+            esi: 500
+        };
+
+        let currentUser = null;
+        let shiftTimerInterval = null;
+        let shiftSeconds = 0;
+        let uploadedPhotoBase64 = null;
+
+        function initializeCleanData() {
+            if (!localStorage.getItem('cn_users')) {
+                const initialUsers = {};
+                initialUsers[SUPER_ADMIN.id] = {
+                    ...SUPER_ADMIN,
+                    desig: 'Super Admin',
+                    blood: 'O+',
+                    bankAcc: '9111319711001',
+                    photo: `https://ui-avatars.com/api/?name=Inaam+Khan&background=0D8ABC&color=fff`
+                };
+                localStorage.setItem('cn_users', JSON.stringify(initialUsers));
+            }
+        }
+
+        initializeCleanData();
+
+        setInterval(() => {
+            document.getElementById('liveClock').innerText = new Date().toLocaleString();
+        }, 1000);
+
+        function previewFilePhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) { uploadedPhotoBase64 = e.target.result; };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleLogin() {
+            const userVal = document.getElementById('loginUser').value.trim();
+            const passVal = document.getElementById('loginPassword').value.trim();
+
+            const users = JSON.parse(localStorage.getItem('cn_users')) || {};
+            const userObj = users[userVal];
+
+            if (userObj && userObj.pass === passVal) {
+                currentUser = userObj;
+                setupDashboardView();
+                document.getElementById('authModal').classList.add('hidden');
+                checkAnnouncements();
+            } else {
+                alert('Invalid Mobile Number or Password!');
+            }
+        }
+
+        function setupDashboardView() {
+            const avatarFallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=0D8ABC&color=fff`;
+            const photoSrc = currentUser.photo || avatarFallback;
+
+            document.getElementById('dashName').innerText = currentUser.name;
+            document.getElementById('dashEmpId').innerText = currentUser.empId || 'CN-101';
+            document.getElementById('dashRole').innerText = currentUser.role;
+            document.getElementById('dashMobile').innerText = currentUser.mobile || currentUser.id;
+
+            document.getElementById('navEmpName').innerText = currentUser.name;
+            document.getElementById('navEmpRole').innerText = currentUser.role;
+            document.getElementById('navPhoto').src = photoSrc;
+            document.getElementById('dashProfilePic').src = photoSrc;
+
+            // ID Card Population
+            document.getElementById('idFrontPhoto').src = photoSrc;
+            document.getElementById('idFrontName').innerText = currentUser.name;
+            document.getElementById('idFrontDesig').innerText = currentUser.desig || 'Executive';
+            document.getElementById('idFrontEmpId').innerText = currentUser.empId || 'CN-101';
+            document.getElementById('idFrontBlood').innerText = currentUser.blood || 'O+';
+            document.getElementById('idFrontPhone').innerText = currentUser.mobile || '9111319711';
+            document.getElementById('idFrontEmail').innerText = currentUser.email || 'careernestorg@gmail.com';
+
+            document.getElementById('idBackDob').innerText = formatDate(currentUser.dob);
+            document.getElementById('idBackDoj').innerText = formatDate(currentUser.doj);
+            document.getElementById('idBackExpiry').innerText = formatDate(currentUser.expiry);
+
+            // Targets
+            const target = currentUser.target || 100;
+            const completed = currentUser.completedTarget || 0;
+            document.getElementById('targetAssigned').innerText = target;
+            document.getElementById('targetCompleted').innerText = completed;
+            document.getElementById('targetRemaining').innerText = Math.max(0, target - completed);
+            document.getElementById('dashTargetRem').innerText = `${Math.max(0, target - completed)} Left`;
+
+            // SALARY ACCESS CHECK LOGIC
+            const salaryLocked = document.getElementById('salaryLockedView');
+            const salaryActive = document.getElementById('salaryActiveView');
+
+            if (currentUser.isSalarySet && currentUser.baseSalary) {
+                salaryLocked.classList.add('hidden');
+                salaryActive.classList.remove('hidden');
+
+                const base = parseFloat(currentUser.baseSalary) || 0;
+                const inc = parseFloat(currentUser.incentive) || 0;
+                const pf = parseFloat(currentUser.pf) || 0;
+                const esi = parseFloat(currentUser.esi) || 0;
+                const net = base + inc - (pf + esi);
+
+                document.getElementById('dashBaseSalary').innerText = `₹ ${base}`;
+                document.getElementById('dashIncentive').innerText = `₹ ${inc}`;
+
+                document.getElementById('slipName').innerText = currentUser.name;
+                document.getElementById('slipEmpId').innerText = currentUser.empId || 'CN-101';
+                document.getElementById('slipDesig').innerText = currentUser.desig || 'Executive';
+                document.getElementById('slipAcc').innerText = currentUser.bankAcc || 'XXXXXXXX1234';
+                document.getElementById('slipBase').innerText = `₹ ${base}`;
+                document.getElementById('slipIncentive').innerText = `₹ ${inc}`;
+                document.getElementById('slipPf').innerText = `₹ ${pf}`;
+                document.getElementById('slipEsi').innerText = `₹ ${esi}`;
+                document.getElementById('slipNetPay').innerText = `₹ ${net}`;
+            } else {
+                salaryActive.classList.add('hidden');
+                salaryLocked.classList.remove('hidden');
+                document.getElementById('dashBaseSalary').innerText = `Not Set`;
+                document.getElementById('dashIncentive').innerText = `₹ 0`;
+            }
+
+            // Admin Controls
+            const adminGroup = document.getElementById('adminMenuGroup');
+            if (currentUser.role === 'EMPLOYEE') {
+                adminGroup.classList.add('hidden');
+            } else {
+                adminGroup.classList.remove('hidden');
+                renderEmployeeDirectory();
+            }
+        }
+
+        function handleRegister() {
+            const name = document.getElementById('regName').value;
+            const mobile = document.getElementById('regMobile').value;
+            const pass = document.getElementById('regPass').value;
+            const dob = document.getElementById('regDob').value;
+
+            if (!name || !mobile || !pass || !dob) {
+                alert('Please fill out all mandatory fields including Date of Birth!');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('cn_users')) || {};
+            const empCount = Object.keys(users).length + 101;
+            const newEmpId = `CN-${empCount}`;
+
+            const today = new Date();
+            const expiryDate = new Date();
+            expiryDate.setFullYear(today.getFullYear() + 1);
+
+            users[mobile] = {
+                id: mobile,
+                pass: pass,
+                name: name,
+                father: document.getElementById('regFather').value,
+                mother: document.getElementById('regMother').value,
+                dob: dob,
+                doj: today.toISOString().split('T')[0],
+                expiry: expiryDate.toISOString().split('T')[0],
+                mobile: mobile,
+                email: document.getElementById('regEmail').value,
+                desig: document.getElementById('regDesig').value || 'Executive',
+                blood: document.getElementById('regBlood').value || 'O+',
+                aadhaar: document.getElementById('regAadhaar').value,
+                pan: document.getElementById('regPan').value,
+                address: document.getElementById('regAddress').value,
+                city: document.getElementById('regCity').value,
+                statePin: document.getElementById('regStatePin').value,
+                bankAcc: document.getElementById('regBankAcc').value,
+                ifsc: document.getElementById('regIfsc').value,
+                role: 'EMPLOYEE',
+                empId: newEmpId,
+                photo: uploadedPhotoBase64 || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0D8ABC&color=fff`,
+                isSalarySet: false, // Default Salary state IS NOT SET
+                baseSalary: 0,
+                target: 100,
+                completedTarget: 0,
+                incentive: 0,
+                pf: 0,
+                esi: 0
+            };
+
+            localStorage.setItem('cn_users', JSON.stringify(users));
+            alert(`Employee Onboarding Successful! Unique Emp ID: ${newEmpId}`);
+            toggleAuth('login');
+        }
+
+        function renderEmployeeDirectory() {
+            const users = JSON.parse(localStorage.getItem('cn_users')) || {};
+            const tbody = document.getElementById('empDirectoryBody');
+            tbody.innerHTML = '';
+
+            Object.values(users).forEach(u => {
+                const isSet = u.isSalarySet && u.baseSalary > 0;
+                const salaryBadge = isSet 
+                    ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">₹ ${u.baseSalary} (Active)</span>`
+                    : `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded">Not Set (Locked)</span>`;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="p-2.5 border font-bold">${u.empId || 'CN-101'}</td>
+                        <td class="p-2.5 border">${u.name}</td>
+                        <td class="p-2.5 border">${u.desig || 'Executive'}</td>
+                        <td class="p-2.5 border">${u.mobile || u.id}</td>
+                        <td class="p-2.5 border">${salaryBadge}</td>
+                        <td class="p-2.5 border">
+                            <button onclick="openSalarySetup('${u.mobile}')" class="bg-cnNavy text-white px-2.5 py-1 rounded text-[10px] font-bold hover:bg-cnNavy-light">
+                                Configure Salary
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openSalarySetup(mobile) {
+            showTab('adminSalary');
+            document.getElementById('masterEmpId').value = mobile;
+            const users = JSON.parse(localStorage.getItem('cn_users')) || {};
+            if (users[mobile]) {
+                document.getElementById('masterBaseSalary').value = users[mobile].baseSalary || '';
+                document.getElementById('masterTarget').value = users[mobile].target || 100;
+                document.getElementById('masterIncentive').value = users[mobile].incentive || '';
+                document.getElementById('masterPf').value = users[mobile].pf || '';
+                document.getElementById('masterEsi').value = users[mobile].esi || '';
+            }
+        }
+
+        function saveMasterSalaryConfig() {
+            const mobile = document.getElementById('masterEmpId').value.trim();
+            const baseSalary = parseFloat(document.getElementById('masterBaseSalary').value);
+
+            if (!mobile || !baseSalary) {
+                alert('Please enter valid Mobile ID and Base Salary!');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('cn_users')) || {};
+
+            if (users[mobile]) {
+                users[mobile].baseSalary = baseSalary;
+                users[mobile].target = parseInt(document.getElementById('masterTarget').value) || 100;
+                users[mobile].incentive = parseFloat(document.getElementById('masterIncentive').value) || 0;
+                users[mobile].pf = parseFloat(document.getElementById('masterPf').value) || 0;
+                users[mobile].esi = parseFloat(document.getElementById('masterEsi').value) || 0;
+                users[mobile].isSalarySet = true; // Unlock Salary Slip
+
+                localStorage.setItem('cn_users', JSON.stringify(users));
+                alert(`Salary updated & Payslip unlocked for ${users[mobile].name}!`);
+                renderEmployeeDirectory();
+            } else {
+                alert('Employee Mobile ID not found in database!');
+            }
+        }
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+        }
+
+        function toggleAuth(type) {
+            if (type === 'register') {
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('registerSection').classList.remove('hidden');
+            } else {
+                document.getElementById('registerSection').classList.add('hidden');
+                document.getElementById('loginSection').classList.remove('hidden');
+            }
+        }
+
+        function attemptLogout() {
+            currentUser = null;
+            document.getElementById('authModal').classList.remove('hidden');
+        }
+
+        function startCamera() {
+            const video = document.getElementById('webcam');
+            document.getElementById('capturedSelfie').classList.add('hidden');
+            video.classList.remove('hidden');
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => { video.srcObject = stream; })
+                .catch(() => alert('Webcam access error!'));
+        }
+
+        function takeSelfie() {
+            const video = document.getElementById('webcam');
+            const img = document.getElementById('capturedSelfie');
+            img.src = 'https://via.placeholder.com/400x300?text=Selfie+Captured';
+            video.classList.add('hidden');
+            img.classList.remove('hidden');
+        }
+
+        function toggleShiftCheckIn() {
+            const btn = document.getElementById('checkInBtn');
+            const status = document.getElementById('attStatusText');
+
+            if (!shiftTimerInterval) {
+                status.innerText = 'ON-DUTY (ACTIVE)';
+                status.className = 'text-emerald-600 font-bold';
+                document.getElementById('attCheckInTime').innerText = new Date().toLocaleTimeString();
+                btn.innerText = 'Checkout Shift';
+                btn.className = 'w-full bg-rose-600 text-white font-bold py-3 rounded-lg shadow text-xs';
+
+                shiftTimerInterval = setInterval(() => {
+                    shiftSeconds++;
+                    const hrs = String(Math.floor(shiftSeconds / 3600)).padStart(2, '0');
+                    const mins = String(Math.floor((shiftSeconds % 3600) / 60)).padStart(2, '0');
+                    const secs = String(shiftSeconds % 60).padStart(2, '0');
+                    document.getElementById('attTimer').innerText = `${hrs}:${mins}:${secs}`;
+                    document.getElementById('dutyTimerDisplay').innerText = `${hrs}h ${mins}m ${secs}s`;
+                }, 1000);
+            } else {
+                clearInterval(shiftTimerInterval);
+                shiftTimerInterval = null;
+                status.innerText = 'CHECKED OUT';
+                status.className = 'text-slate-500 font-bold';
+                btn.innerText = 'Shift Completed';
+            }
+        }
+
+        function submitWorkLog() {
+            const client = document.getElementById('logClient').value;
+            const details = document.getElementById('logDetails').value;
+            const units = parseInt(document.getElementById('logUnits').value) || 0;
+
+            if (!client || !details) return alert('Enter log details!');
+
+            currentUser.completedTarget = (currentUser.completedTarget || 0) + units;
+            const users = JSON.parse(localStorage.getItem('cn_users')) || {};
+            if (users[currentUser.id]) {
+                users[currentUser.id].completedTarget = currentUser.completedTarget;
+                localStorage.setItem('cn_users', JSON.stringify(users));
+            }
+            setupDashboardView();
+            alert('Target updated successfully!');
+        }
+
+        function publishAnnouncement() {
+            const msg = document.getElementById('adminAnnounceInput').value;
+            if (!msg) return;
+            localStorage.setItem('cn_announcement', msg);
+            alert('Announcement Published!');
+        }
+
+        function checkAnnouncements() {
+            const msg = localStorage.getItem('cn_announcement');
+            if (msg) {
+                document.getElementById('announcementPopupText').innerText = msg;
+                document.getElementById('announcementModal').classList.remove('hidden');
+            }
+        }
+
+        function closeAnnouncementModal() {
+            document.getElementById('announcementModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

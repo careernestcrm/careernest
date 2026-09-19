@@ -4,36 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Career Nest - HRMS & CRM Portal</title>
-    <link rel="icon" type="image/png" href="logo.png">
-    
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
                     colors: {
-                        cnOrange: {
-                            DEFAULT: '#FF6B00',
-                            dark: '#E65100',
-                            light: '#FF8533',
-                            50: '#FFF3EB'
-                        },
-                        cnGreen: {
-                            DEFAULT: '#2E7D32',
-                            dark: '#1B5E20',
-                            light: '#4CAF50',
-                            50: '#E8F5E9'
-                        },
-                        cnNavy: '#0B192C'
+                        cnOrange: { DEFAULT: '#FF6B00', dark: '#E05D00', light: '#FF8533' },
+                        cnGreen: { DEFAULT: '#2E7D32', dark: '#1B5E20', light: '#4CAF50' },
+                        cnNavy: { DEFAULT: '#0A2540', dark: '#061729', light: '#1E3A8A' }
                     }
                 }
             }
@@ -45,323 +28,213 @@
             .printable-area, .printable-area * { visibility: visible; }
             .printable-area { position: absolute; left: 0; top: 0; width: 100%; }
         }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
     </style>
 </head>
-<body class="bg-slate-50 font-sans min-h-screen flex flex-col text-slate-800 antialiased selection:bg-cnOrange selection:text-white">
+<body class="bg-slate-50 font-sans min-h-screen flex flex-col text-slate-800">
 
+    <!-- ANNOUNCEMENT POPUP MODAL -->
     <div id="announcementModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 border-t-8 border-cnOrange transform transition-all">
-            <div class="flex items-center justify-between pb-3 border-b">
-                <div class="flex items-center space-x-3 text-cnOrange">
-                    <div class="w-10 h-10 rounded-full bg-cnOrange-50 flex items-center justify-center">
-                        <i class="fa-solid fa-bullhorn text-xl text-cnOrange"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold text-slate-800">Important Announcement</h3>
-                        <p class="text-[10px] text-slate-400">Career Nest Management Notice</p>
-                    </div>
-                </div>
-                <span id="announcementDate" class="text-[11px] font-semibold text-slate-400">--</span>
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border-t-4 border-cnOrange">
+            <div class="flex items-center space-x-3 text-cnOrange mb-3">
+                <i class="fa-solid fa-bullhorn text-2xl"></i>
+                <h3 class="text-lg font-bold text-slate-800">Company Announcement</h3>
             </div>
-            <div class="py-4">
-                <p id="announcementPopupText" class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100 whitespace-pre-line">
-                    Welcome to Career Nest HRMS System.
-                </p>
-            </div>
-            <button onclick="closeAnnouncementModal()" class="w-full bg-cnOrange hover:bg-cnOrange-dark text-white text-xs font-bold py-3 rounded-xl shadow-lg shadow-cnOrange/20 transition-all flex items-center justify-center space-x-2">
-                <i class="fa-solid fa-check-circle"></i>
-                <span>I Acknowledge & Understand</span>
-            </button>
+            <p id="announcementPopupText" class="text-sm text-slate-600 mb-6 bg-slate-50 p-3 rounded-lg border">Welcome to Career Nest HRMS System.</p>
+            <button onclick="closeAnnouncementModal()" class="w-full bg-cnOrange hover:bg-cnOrange-dark text-white text-xs font-bold py-2.5 rounded-lg shadow">Acknowledge & Close</button>
         </div>
     </div>
 
-    <div id="authModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-6 sm:p-8 border border-slate-100">
-            
+    <!-- AUTHENTICATION MODAL (LOGIN & REGISTRATION) -->
+    <div id="authModal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 border border-slate-200">
             <div class="text-center mb-6">
-                <div class="w-20 h-20 mx-auto mb-2 flex items-center justify-center">
-                    <img src="logo.png" alt="Career Nest Logo" class="max-h-full max-w-full object-contain" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-16 h-16 bg-gradient-to-tr from-cnOrange to-cnGreen rounded-2xl flex items-center justify-center text-white font-extrabold text-2xl shadow-lg\'>CN</div>';">
+                <div class="flex justify-center items-center mb-2">
+                    <img src="logo.png" alt="Career Nest Logo" class="h-16 object-contain" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x50?text=CAREER+NEST';">
                 </div>
-                <h2 class="text-2xl font-black text-slate-900 tracking-tight">CAREER NEST</h2>
-                <p class="text-[11px] text-cnGreen font-bold tracking-widest uppercase mt-0.5">Nurture Today, Achieve Tomorrow</p>
+                <h2 class="text-xl font-extrabold text-cnNavy tracking-wide">CAREER NEST</h2>
+                <p class="text-[10px] text-cnGreen font-bold uppercase tracking-widest">Nurture Today, Achieve Tomorrow</p>
             </div>
 
-            <!-- LOGIN FORM -->
+            <!-- LOGIN SECTION -->
             <div id="loginSection" class="space-y-4">
-                <div class="bg-slate-50 p-1.5 rounded-xl border border-slate-200 flex text-xs font-bold text-center">
-                    <span class="w-full py-2 bg-white rounded-lg shadow-sm text-cnOrange">Portal Single Sign-On</span>
-                </div>
-
+                <h3 class="text-sm font-bold text-slate-700 border-b pb-2">Portal Login</h3>
                 <div>
-                    <label class="text-xs font-bold text-slate-700 block mb-1">User ID / Mobile Number / Email</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-user text-slate-400 absolute left-3.5 top-3 text-xs"></i>
-                        <input type="text" id="loginUser" placeholder="Enter Mobile Number or Email" class="w-full border border-slate-300 text-xs rounded-xl pl-9 pr-3 py-2.5 outline-none focus:ring-2 focus:ring-cnOrange focus:border-transparent transition-all">
-                    </div>
+                    <label class="text-xs font-semibold text-slate-600">User ID (Mobile No. / Email)</label>
+                    <input type="text" id="loginUser" placeholder="Enter Mobile No or Email" class="w-full mt-1 border text-xs rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-cnOrange">
                 </div>
-
                 <div>
-                    <label class="text-xs font-bold text-slate-700 block mb-1">Password</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-lock text-slate-400 absolute left-3.5 top-3 text-xs"></i>
-                        <input type="password" id="loginPassword" placeholder="••••••••" class="w-full border border-slate-300 text-xs rounded-xl pl-9 pr-3 py-2.5 outline-none focus:ring-2 focus:ring-cnOrange focus:border-transparent transition-all">
-                    </div>
+                    <label class="text-xs font-semibold text-slate-600">Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" class="w-full mt-1 border text-xs rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-cnOrange">
                 </div>
-
-                <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-cnOrange to-cnOrange-dark hover:from-cnOrange-dark hover:to-cnOrange text-white text-xs font-bold py-3 rounded-xl shadow-lg shadow-cnOrange/30 transition-all flex items-center justify-center space-x-2">
-                    <span>Sign In To Portal</span>
-                    <i class="fa-solid fa-arrow-right"></i>
+                <button onclick="handleLogin()" class="w-full bg-cnOrange hover:bg-cnOrange-dark text-white text-xs font-bold py-3 rounded-lg shadow transition-all">
+                    Login to Dashboard
                 </button>
-
-                <div class="text-center pt-2 border-t border-slate-100">
-                    <p class="text-xs text-slate-500">New Employee Joining? 
-                        <button onclick="toggleAuth('register')" class="text-cnGreen font-bold hover:underline">Complete Onboarding Here</button>
-                    </p>
+                <div class="text-center pt-2">
+                    <button onclick="toggleAuth('register')" class="text-xs text-cnGreen font-bold hover:underline">New Employee Joining Registration</button>
                 </div>
             </div>
 
-            <!-- REGISTRATION / ONBOARDING FORM -->
-            <div id="registerSection" class="hidden space-y-4 max-h-[72vh] overflow-y-auto pr-1 custom-scrollbar">
-                <div class="flex items-center justify-between border-b pb-2">
-                    <h3 class="text-sm font-extrabold text-slate-800">Employee Joining Registration</h3>
-                    <span class="text-[10px] bg-cnGreen-50 text-cnGreen font-bold px-2 py-0.5 rounded-full">New Joining</span>
-                </div>
-
+            <!-- REGISTRATION FORM FOR EMPLOYEES -->
+            <div id="registerSection" class="hidden space-y-3 max-h-[70vh] overflow-y-auto pr-2">
+                <h3 class="text-sm font-bold text-slate-800 border-b pb-2">Employee Onboarding Form</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                     <div>
-                        <label class="font-bold text-slate-700 block mb-0.5">Full Name *</label>
-                        <input type="text" id="regName" class="w-full border p-2 rounded-lg outline-none focus:border-cnOrange" placeholder="e.g. Rahul Sharma">
+                        <label class="font-semibold text-slate-600">Full Name *</label>
+                        <input type="text" id="regName" class="w-full border p-2 rounded mt-0.5" placeholder="Full Name">
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700 block mb-0.5">Father's Name *</label>
-                        <input type="text" id="regFather" class="w-full border p-2 rounded-lg outline-none focus:border-cnOrange" placeholder="Father Name">
+                        <label class="font-semibold text-slate-600">Father's Name *</label>
+                        <input type="text" id="regFather" class="w-full border p-2 rounded mt-0.5" placeholder="Father Name">
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700 block mb-0.5">Mother's Name *</label>
-                        <input type="text" id="regMother" class="w-full border p-2 rounded-lg outline-none focus:border-cnOrange" placeholder="Mother Name">
+                        <label class="font-semibold text-slate-600">Mother's Name *</label>
+                        <input type="text" id="regMother" class="w-full border p-2 rounded mt-0.5" placeholder="Mother Name">
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700 block mb-0.5">Date of Birth (DOB) *</label>
-                        <input type="date" id="regDob" class="w-full border p-2 rounded-lg outline-none focus:border-cnOrange">
+                        <label class="font-semibold text-slate-600">Date of Birth (DOB) *</label>
+                        <input type="date" id="regDob" class="w-full border p-2 rounded mt-0.5">
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700 block mb-0.5">Mobile Number (Login ID) *</label>
-                        <input type="text" id="regMobile" class="w-full border p-2 rounded-lg outline-none focus:border-cnOrange" placeholder="10 Digit Mobile">
+                        <label class="font-semibold text-slate-600">Mobile Number (Login ID) *</label>
+                        <input type="text" id="regMobile" class="w-full border p-2 rounded mt-0.5" placeholder="Mobile Number">
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700 block mb-0.5">Email Address *</label>
-                        <input type="email" id="regEmail" class="w-full border p-2 rounded-lg outline-none focus:border-cnOrange" placeholder="rahul@domain.com">
+                        <label class="font-semibold text-slate-600">Email Address *</label>
+                        <input type="email" id="regEmail" class="w-full border p-2 rounded mt-0.5" placeholder="user@domain.com">
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700 block mb-0.5">Create Password *</label>
-                        <input type="password" id="regPass" class="w-full border p-2 rounded-lg outline-none focus:border-cnOrange" placeholder="••••••••">
+                        <label class="font-semibold text-slate-600">Password *</label>
+                        <input type="password" id="regPass" class="w-full border p-2 rounded mt-0.5" placeholder="••••••••">
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700 block mb-0.5">Designation *</label>
-                        <input type="text" id="regDesig" class="w-full border p-2 rounded-lg outline-none focus:border-cnOrange" placeholder="e.g. CRM Executive">
+                        <label class="font-semibold text-slate-600">Designation *</label>
+                        <input type="text" id="regDesig" class="w-full border p-2 rounded mt-0.5" placeholder="Field Executive">
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700 block mb-0.5">Blood Group</label>
-                        <input type="text" id="regBlood" class="w-full border p-2 rounded-lg outline-none focus:border-cnOrange" placeholder="e.g. B+">
+                        <label class="font-semibold text-slate-600">Aadhaar Number *</label>
+                        <input type="text" id="regAadhaar" class="w-full border p-2 rounded mt-0.5" placeholder="12 Digit Aadhaar">
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700 block mb-0.5">Aadhaar Number *</label>
-                        <input type="text" id="regAadhaar" class="w-full border p-2 rounded-lg outline-none focus:border-cnOrange" placeholder="12 Digit Aadhaar">
-                    </div>
-                    <div>
-                        <label class="font-bold text-slate-700 block mb-0.5">PAN Number *</label>
-                        <input type="text" id="regPan" class="w-full border p-2 rounded-lg outline-none focus:border-cnOrange" placeholder="ABCDE1234F">
+                        <label class="font-semibold text-slate-600">PAN Number *</label>
+                        <input type="text" id="regPan" class="w-full border p-2 rounded mt-0.5" placeholder="ABCDE1234F">
                     </div>
                     <div class="sm:col-span-2">
-                        <label class="font-bold text-slate-700 block mb-0.5">Full Street Address *</label>
-                        <input type="text" id="regAddress" class="w-full border p-2 rounded-lg outline-none focus:border-cnOrange" placeholder="House No, Street, Landmark">
+                        <label class="font-semibold text-slate-600">Full Address *</label>
+                        <input type="text" id="regAddress" class="w-full border p-2 rounded mt-0.5" placeholder="House No, Street, Landmark">
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700 block mb-0.5">City / District *</label>
-                        <input type="text" id="regCity" class="w-full border p-2 rounded-lg outline-none focus:border-cnOrange" placeholder="Jabalpur">
+                        <label class="font-semibold text-slate-600">City / District *</label>
+                        <input type="text" id="regCity" class="w-full border p-2 rounded mt-0.5" placeholder="Jabalpur">
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700 block mb-0.5">State & Pincode *</label>
-                        <input type="text" id="regStatePin" class="w-full border p-2 rounded-lg outline-none focus:border-cnOrange" placeholder="MP - 482002">
+                        <label class="font-semibold text-slate-600">State / Pincode *</label>
+                        <input type="text" id="regStatePin" class="w-full border p-2 rounded mt-0.5" placeholder="MP - 482002">
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700 block mb-0.5">Bank Account Number</label>
-                        <input type="text" id="regBankAcc" class="w-full border p-2 rounded-lg outline-none focus:border-cnOrange" placeholder="Bank Account No">
+                        <label class="font-semibold text-slate-600">Bank Account No.</label>
+                        <input type="text" id="regBankAcc" class="w-full border p-2 rounded mt-0.5" placeholder="Account Number">
                     </div>
                     <div>
-                        <label class="font-bold text-slate-700 block mb-0.5">Bank IFSC Code</label>
-                        <input type="text" id="regIfsc" class="w-full border p-2 rounded-lg outline-none focus:border-cnOrange" placeholder="SBIN0001234">
-                    </div>
-                    <div class="sm:col-span-2">
-                        <label class="font-bold text-slate-700 block mb-0.5">Profile Photo Upload</label>
-                        <input type="file" id="regPhoto" accept="image/*" class="w-full border p-1.5 rounded-lg text-xs" onchange="previewFilePhoto(event, 'reg')">
+                        <label class="font-semibold text-slate-600">IFSC Code</label>
+                        <input type="text" id="regIfsc" class="w-full border p-2 rounded mt-0.5" placeholder="SBIN0001234">
                     </div>
                 </div>
-
-                <div class="pt-2">
-                    <button onclick="handleRegister()" class="w-full bg-cnGreen hover:bg-cnGreen-dark text-white text-xs font-bold py-3 rounded-xl shadow-lg shadow-cnGreen/20 transition-all flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-user-plus"></i>
-                        <span>Submit & Generate Employee ID</span>
-                    </button>
-                </div>
-
+                <button onclick="handleRegister()" class="w-full bg-cnGreen hover:bg-cnGreen-dark text-white text-xs font-bold py-2.5 rounded-lg shadow mt-2">
+                    Submit Registration
+                </button>
                 <div class="text-center">
-                    <button onclick="toggleAuth('login')" class="text-xs text-slate-600 font-bold hover:underline">Already registered? Login Here</button>
+                    <button onclick="toggleAuth('login')" class="text-xs text-cnNavy font-bold hover:underline">Back to Login</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <header class="bg-gradient-to-r from-cnNavy via-slate-900 to-cnNavy text-white shadow-xl sticky top-0 z-40 border-b border-cnOrange/30">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-            
+    <!-- HEADER -->
+    <header class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-white rounded-xl p-1 flex items-center justify-center shadow-md">
-                    <img src="logo.png" alt="Career Nest" class="max-h-full max-w-full object-contain" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'font-black text-cnOrange text-lg\'>CN</span>';">
-                </div>
-                <div>
-                    <h1 class="text-base font-black tracking-tight text-white flex items-center space-x-2">
-                        <span>CAREER NEST</span>
-                        <span id="roleBadgeHeader" class="hidden sm:inline-block text-[9px] bg-cnOrange/20 border border-cnOrange/40 text-cnOrange font-bold px-2 py-0.5 rounded-full uppercase">Portal</span>
-                    </h1>
-                    <p class="text-[9px] text-cnGreen-light font-bold uppercase tracking-wider">Nurture Today, Achieve Tomorrow</p>
+                <img src="logo.png" alt="Career Nest Logo" class="h-10 object-contain" onerror="this.onerror=null; this.src='https://via.placeholder.com/120x40?text=CAREER+NEST';">
+                <div class="hidden sm:block">
+                    <h1 class="text-base font-extrabold text-cnNavy tracking-wide">CAREER NEST</h1>
+                    <p class="text-[9px] text-cnGreen font-bold uppercase tracking-widest">Nurture Today, Achieve Tomorrow</p>
                 </div>
             </div>
 
-            <div class="flex items-center space-x-3 sm:space-x-5 text-xs">
-                <!-- LIVE CLOCK -->
-                <div class="hidden md:flex bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700/80 items-center space-x-2 shadow-inner">
-                    <span class="w-2 h-2 rounded-full bg-cnGreen animate-pulse"></span>
+            <div class="flex items-center space-x-4 text-xs">
+                <div class="hidden md:flex bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200 items-center space-x-2 text-slate-700 font-semibold">
                     <i class="fa-regular fa-clock text-cnOrange"></i>
-                    <span id="liveClock" class="font-mono font-bold text-slate-200">Loading Clock...</span>
+                    <span id="liveClock">Loading Clock...</span>
                 </div>
 
-                <!-- USER CHIP -->
-                <div class="flex items-center space-x-2.5 bg-slate-800/50 p-1 pr-3 rounded-full border border-slate-700">
-                    <img id="navPhoto" src="https://ui-avatars.com/api/?name=User" class="w-8 h-8 rounded-full object-cover border border-cnOrange">
-                    <div class="hidden sm:block text-left">
-                        <p id="navEmpName" class="font-bold text-slate-100 leading-tight">--</p>
-                        <p id="navEmpRole" class="text-[9px] text-cnGreen-light font-extrabold uppercase">--</p>
+                <div class="flex items-center space-x-3 border-l border-slate-200 pl-3">
+                    <div class="w-8 h-8 rounded-full bg-cnOrange text-white font-bold flex items-center justify-center text-xs shadow-sm" id="navAvatarInitials">--</div>
+                    <div class="hidden sm:block text-right">
+                        <p id="navEmpName" class="font-bold text-slate-800 leading-none">--</p>
+                        <p id="navEmpRole" class="text-[10px] text-cnGreen font-bold">--</p>
                     </div>
                 </div>
 
-                <button onclick="attemptLogout()" class="bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 px-3 py-1.5 rounded-xl font-bold transition flex items-center space-x-1" title="Logout">
-                    <i class="fa-solid fa-power-off"></i>
-                    <span class="hidden sm:inline">Logout</span>
-                </button>
+                <button onclick="attemptLogout()" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg font-bold transition shadow-sm" title="Logout"><i class="fa-solid fa-power-off"></i></button>
             </div>
         </div>
     </header>
 
-    <div class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 flex flex-col md:flex-row gap-6">
+    <!-- MAIN BODY CONTAINER -->
+    <div class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
 
         <!-- SIDEBAR NAVIGATION -->
-        <aside class="w-full md:w-64 bg-white rounded-3xl shadow-sm border border-slate-200 p-4 shrink-0 h-fit space-y-1.5">
-            <div class="text-center pb-3 border-b border-slate-100 mb-2">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Main Dashboard Menu</p>
+        <aside class="w-full md:w-64 bg-white rounded-2xl shadow-sm border border-slate-200 p-4 shrink-0 h-fit space-y-2">
+            <div class="text-center pb-3 border-b border-slate-100">
+                <div class="w-12 h-12 bg-cnOrange/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fa-solid fa-user-gear text-cnOrange text-xl"></i>
+                </div>
+                <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Dashboard Menu</h3>
             </div>
 
-            <button onclick="showTab('dashboard')" class="tab-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold bg-cnOrange text-white shadow-md shadow-cnOrange/20 transition-all">
-                <div class="flex items-center space-x-3">
-                    <i class="fa-solid fa-chart-pie w-4"></i>
-                    <span>Dashboard</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] opacity-70"></i>
+            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider px-3 pt-2">Main Menu</p>
+
+            <button onclick="showTab('dashboard')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-bold bg-cnOrange text-white shadow-sm">
+                <i class="fa-solid fa-chart-pie w-4 text-white"></i><span>Dashboard Overview</span>
             </button>
 
-            <button onclick="showTab('attendance')" class="tab-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-all">
-                <div class="flex items-center space-x-3">
-                    <i class="fa-solid fa-camera w-4 text-cnGreen"></i>
-                    <span>Selfie Attendance</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] opacity-40"></i>
+            <button onclick="showTab('attendance')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-user-clock w-4 text-slate-400"></i><span>Attendance (Check-In/Out)</span>
             </button>
 
-            <button onclick="showTab('idCard')" class="tab-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-all">
-                <div class="flex items-center space-x-3">
-                    <i class="fa-solid fa-id-card w-4 text-indigo-500"></i>
-                    <span>Digital ID Card</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] opacity-40"></i>
+            <button onclick="showTab('targets')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-bullseye w-4 text-slate-400"></i><span>Targets & Work Logs</span>
             </button>
 
-            <button onclick="showTab('targets')" class="tab-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-all">
-                <div class="flex items-center space-x-3">
-                    <i class="fa-solid fa-bullseye w-4 text-rose-500"></i>
-                    <span>Targets & Daily Log</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] opacity-40"></i>
+            <button onclick="showTab('payroll')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-file-invoice-dollar w-4 text-slate-400"></i><span>Salary Slip</span>
             </button>
 
-            <button onclick="showTab('payroll')" class="tab-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-all">
-                <div class="flex items-center space-x-3">
-                    <i class="fa-solid fa-file-invoice-dollar w-4 text-emerald-600"></i>
-                    <span>Salary Slip</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] opacity-40"></i>
+            <button onclick="showTab('requests')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-receipt w-4 text-slate-400"></i><span>Leaves & Expenses</span>
             </button>
 
-            <button onclick="showTab('requests')" class="tab-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-all">
-                <div class="flex items-center space-x-3">
-                    <i class="fa-solid fa-hand-holding-dollar w-4 text-amber-500"></i>
-                    <span>Leaves & Expenses</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] opacity-40"></i>
-            </button>
-
-            <button onclick="showTab('policies')" class="tab-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-all">
-                <div class="flex items-center space-x-3">
-                    <i class="fa-solid fa-file-shield w-4 text-teal-600"></i>
-                    <span>Company Policies</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] opacity-40"></i>
-            </button>
-
-            <button onclick="showTab('helpdesk')" class="tab-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-all">
-                <div class="flex items-center space-x-3">
-                    <i class="fa-solid fa-headset w-4 text-sky-500"></i>
-                    <span>Helpdesk Escalation</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] opacity-40"></i>
+            <button onclick="showTab('companyPolicies')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-file-contract w-4 text-slate-400"></i><span>Company Policies</span>
             </button>
 
             <!-- ADMINISTRATIVE CONTROLS -->
             <div id="adminMenuGroup" class="pt-3 border-t border-slate-100 mt-2 space-y-1">
-                <p class="text-[9px] font-black text-cnOrange uppercase tracking-widest px-3 mb-1">Administrative Controls</p>
+                <p class="text-[10px] font-extrabold text-cnGreen uppercase tracking-wider px-3 mb-1">Administrative Controls</p>
 
-                <button onclick="showTab('adminAnnounce')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50">
-                    <i class="fa-solid fa-bullhorn w-4 text-cnOrange"></i><span>Publish Notice</span>
+                <button onclick="showTab('adminProfileSetup')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100">
+                    <i class="fa-solid fa-user-shield w-4 text-cnOrange"></i><span>Super Admin Profile</span>
                 </button>
 
-                <button onclick="showTab('adminSalary')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50">
-                    <i class="fa-solid fa-sliders w-4 text-cnGreen"></i><span>Salary & Target Master</span>
+                <button onclick="showTab('adminAnnounce')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100">
+                    <i class="fa-solid fa-bullhorn w-4 text-cnGreen"></i><span>Announcements</span>
                 </button>
 
-                <button onclick="showTab('employeeList')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50">
-                    <i class="fa-solid fa-users-gear w-4 text-indigo-600"></i><span>Employee Directory</span>
+                <button onclick="showTab('adminSalary')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100">
+                    <i class="fa-solid fa-sliders w-4 text-cnNavy"></i><span>Salary & Target Master</span>
                 </button>
 
-                <button onclick="showTab('approvals')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50">
-                    <i class="fa-solid fa-clipboard-check w-4 text-amber-600"></i><span>Leave & Claim Approvals</span>
-                </button>
-
-                <button id="masterAdminTabBtn" onclick="showTab('masterAdminControl')" class="tab-btn hidden w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-extrabold bg-slate-900 text-amber-400 border border-amber-500/30">
-                    <i class="fa-solid fa-crown w-4 text-amber-400"></i><span>Master Owner Control</span>
+                <button onclick="showTab('employeeList')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100">
+                    <i class="fa-solid fa-users-gear w-4 text-purple-600"></i><span>Employee Directory</span>
                 </button>
             </div>
         </aside>
@@ -369,638 +242,343 @@
         <!-- MAIN PANEL AREA -->
         <main class="flex-1 space-y-6">
 
+            <!-- 1. DASHBOARD OVERVIEW -->
             <div id="dashboard" class="tab-content space-y-6">
-                <!-- PROFILE BANNER -->
-                <div class="bg-gradient-to-r from-cnNavy via-slate-900 to-cnNavy p-6 rounded-3xl border border-slate-800 text-white shadow-lg relative overflow-hidden flex flex-col sm:flex-row justify-between items-center gap-6">
-                    <div class="flex items-center space-x-5 relative z-10">
-                        <img id="dashProfilePic" src="https://ui-avatars.com/api/?name=User" class="w-20 h-20 rounded-2xl object-cover border-2 border-cnOrange shadow-lg">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 rounded-2xl bg-cnOrange text-white font-extrabold text-xl flex items-center justify-center shadow" id="dashAvatar">CN</div>
                         <div>
-                            <div class="flex items-center space-x-2">
-                                <h2 class="text-xl font-black text-white"><span id="dashName">User</span></h2>
-                                <span id="dashRoleTag" class="text-[9px] bg-cnGreen font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Employee</span>
-                            </div>
-                            <p class="text-xs text-slate-300 mt-0.5">Emp ID: <span id="dashEmpId" class="font-bold text-cnOrange">--</span> | Joined: <span id="dashDoj">--</span></p>
-                            <p class="text-[11px] text-slate-400 mt-1 flex items-center space-x-3">
-                                <span><i class="fa-solid fa-mobile-screen text-cnOrange mr-1"></i><span id="dashMobile">--</span></span>
-                                <span><i class="fa-solid fa-envelope text-cnGreen mr-1"></i><span id="dashEmail">--</span></span>
-                            </p>
+                            <h2 class="text-xl font-bold text-cnNavy"><span id="dashName">--</span></h2>
+                            <p class="text-xs text-slate-500">Emp ID: <span id="dashEmpId" class="font-bold text-slate-700">--</span> | Role: <span id="dashRole" class="font-bold text-cnGreen">--</span></p>
+                            <p class="text-[11px] text-slate-500 mt-0.5"><i class="fa-solid fa-phone text-slate-400 mr-1"></i><span id="dashMobile">--</span></p>
                         </div>
-                    </div>
-
-                    <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 text-center w-full sm:w-auto shrink-0 relative z-10">
-                        <p class="text-[10px] font-extrabold text-slate-300 uppercase tracking-widest mb-1">Shift Status Today</p>
-                        <span id="dashAttendanceBadge" class="inline-block bg-rose-500/20 text-rose-300 border border-rose-500/40 text-xs font-bold px-3 py-1 rounded-full">NOT CHECKED IN</span>
                     </div>
                 </div>
 
-                <!-- STATS GRID -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
-                        <div class="p-3 bg-cnOrange-50 text-cnOrange rounded-2xl"><i class="fa-solid fa-clock-rotate-left text-xl"></i></div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
+                        <div class="p-3 bg-orange-50 text-cnOrange rounded-lg"><i class="fa-solid fa-clock text-lg"></i></div>
                         <div>
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Active Shift Time</p>
-                            <h3 id="dutyTimerDisplay" class="text-lg font-black text-slate-800">00h 00m 00s</h3>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Shift Duty Hours</p>
+                            <h3 id="dutyTimerDisplay" class="text-lg font-bold text-slate-800">00h 00m 00s</h3>
                         </div>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
-                        <div class="p-3 bg-cnGreen-50 text-cnGreen rounded-2xl"><i class="fa-solid fa-bullseye text-xl"></i></div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
+                        <div class="p-3 bg-emerald-50 text-cnGreen rounded-lg"><i class="fa-solid fa-bullseye text-lg"></i></div>
                         <div>
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Target Remaining</p>
-                            <h3 id="dashTargetRem" class="text-lg font-black text-slate-800">0 Units Left</h3>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Target Balance</p>
+                            <h3 id="dashTargetRem" class="text-lg font-bold text-slate-800">0 Left</h3>
                         </div>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
-                        <div class="p-3 bg-emerald-50 text-emerald-600 rounded-2xl"><i class="fa-solid fa-indian-rupee-sign text-xl"></i></div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
+                        <div class="p-3 bg-blue-50 text-cnNavy rounded-lg"><i class="fa-solid fa-indian-rupee-sign text-lg"></i></div>
                         <div>
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Base Salary</p>
-                            <h3 id="dashBaseSalary" class="text-lg font-black text-slate-800">Not Configured</h3>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Monthly Base Salary</p>
+                            <h3 id="dashBaseSalary" class="text-lg font-bold text-slate-800">Not Set</h3>
                         </div>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
-                        <div class="p-3 bg-purple-50 text-purple-600 rounded-2xl"><i class="fa-solid fa-gift text-xl"></i></div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
+                        <div class="p-3 bg-purple-50 text-purple-600 rounded-lg"><i class="fa-solid fa-gift text-lg"></i></div>
                         <div>
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Target Incentive</p>
-                            <h3 id="dashIncentive" class="text-lg font-black text-slate-800">₹ 0</h3>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Incentive Earned</p>
+                            <h3 id="dashIncentive" class="text-lg font-bold text-slate-800">₹ 0</h3>
                         </div>
-                    </div>
-                </div>
-
-                <!-- ANNOUNCEMENT BANNER ON DASHBOARD -->
-                <div class="bg-gradient-to-r from-cnOrange-50 to-white p-5 rounded-2xl border border-cnOrange/20 flex items-start space-x-4">
-                    <div class="p-2.5 bg-cnOrange text-white rounded-xl shadow-md"><i class="fa-solid fa-bullhorn text-lg"></i></div>
-                    <div class="space-y-1">
-                        <h4 class="text-xs font-extrabold text-slate-800 uppercase tracking-wide">Latest Company Announcement</h4>
-                        <p id="dashAnnounceText" class="text-xs text-slate-600">No active announcements at this time.</p>
                     </div>
                 </div>
             </div>
 
+            <!-- 2. CHECK-IN / CHECK-OUT ATTENDANCE -->
             <div id="attendance" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-5">
-                    <div class="border-b pb-3 flex justify-between items-center">
-                        <div>
-                            <h3 class="text-base font-extrabold text-slate-900"><i class="fa-solid fa-camera text-cnGreen mr-2"></i>Selfie Attendance & 8-Hour Work Shift</h3>
-                            <p class="text-xs text-slate-400">Mark check-in with live webcam capture. Minimum 8 hours shift mandatory.</p>
-                        </div>
-                        <span id="attLateBadge" class="hidden text-[10px] bg-rose-100 text-rose-700 border border-rose-200 font-extrabold px-3 py-1 rounded-full">LATE ENTRY MARKED</span>
-                    </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-base font-bold text-cnNavy border-b pb-2"><i class="fa-solid fa-user-clock text-cnOrange mr-2"></i>Employee Attendance Portal</h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- CAMERA VIEW -->
-                        <div class="space-y-3">
-                            <div class="aspect-video bg-slate-900 rounded-2xl overflow-hidden relative border border-slate-800 flex items-center justify-center shadow-inner">
-                                <video id="webcam" autoplay playsinline class="w-full h-full object-cover hidden"></video>
-                                <img id="capturedSelfie" src="https://placehold.co/600x400/0B192C/FFFFFF?text=Click+Open+Camera+To+Capture+Selfie" class="w-full h-full object-cover">
-                                <canvas id="photoCanvas" class="hidden"></canvas>
-                            </div>
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 text-center space-y-4">
+                            <i class="fa-solid fa-business-time text-5xl text-cnOrange"></i>
+                            <h4 class="font-bold text-slate-800 text-sm">Live Shift Tracking (8 Hours Shift)</h4>
+                            <div class="text-3xl font-mono font-black text-cnNavy" id="attTimer">00:00:00</div>
 
-                            <div class="flex gap-2">
-                                <button onclick="startCamera()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold py-2.5 rounded-xl transition flex items-center justify-center space-x-2">
-                                    <i class="fa-solid fa-video"></i>
-                                    <span>Open Camera</span>
+                            <div class="flex gap-3 justify-center pt-2">
+                                <button id="checkInBtn" onclick="handleCheckIn()" class="bg-cnGreen hover:bg-cnGreen-dark text-white font-bold px-6 py-3 rounded-xl shadow-sm text-xs flex items-center gap-2">
+                                    <i class="fa-solid fa-right-to-bracket"></i> Check-In
                                 </button>
-                                <button onclick="takeSelfie()" class="flex-1 bg-cnOrange hover:bg-cnOrange-dark text-white text-xs font-bold py-2.5 rounded-xl shadow-md shadow-cnOrange/20 transition flex items-center justify-center space-x-2">
-                                    <i class="fa-solid fa-circle-dot"></i>
-                                    <span>Capture Photo</span>
+                                <button id="checkOutBtn" onclick="handleCheckOut()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-6 py-3 rounded-xl shadow-sm text-xs flex items-center gap-2 opacity-50 cursor-not-allowed" disabled>
+                                    <i class="fa-solid fa-right-from-bracket"></i> Check-Out
                                 </button>
                             </div>
                         </div>
 
-                        <!-- SHIFT CONTROLS -->
-                        <div class="space-y-4 bg-slate-50 p-5 rounded-2xl border border-slate-200 text-xs flex flex-col justify-between">
-                            <div class="space-y-3">
-                                <h4 class="font-extrabold text-slate-800 text-sm border-b pb-2">Shift Guidelines & Tracking</h4>
-                                <ul class="list-disc pl-4 space-y-1.5 text-slate-600 text-[11px]">
-                                    <li>Standard duty shift is <strong>8 Hours Minimum</strong>.</li>
-                                    <li>Early checkout (&lt; 8 Hours) automatically registers as <strong>Half Day</strong>.</li>
-                                    <li>Attendance requires valid photo capture verification.</li>
-                                </ul>
-
-                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2 mt-4">
-                                    <div class="flex justify-between items-center">
-                                        <span class="font-bold text-slate-500">Status:</span>
-                                        <span id="attStatusText" class="font-extrabold text-rose-600">OFF-DUTY</span>
-                                    </div>
-                                    <div class="flex justify-between items-center">
-                                        <span class="font-bold text-slate-500">Check-In Time:</span>
-                                        <span id="attCheckInTime" class="font-bold text-slate-800">--:--</span>
-                                    </div>
-                                    <div class="flex justify-between items-center pt-2 border-t">
-                                        <span class="font-bold text-slate-700">Active Shift Timer:</span>
-                                        <span id="attTimer" class="font-mono text-base font-black text-cnNavy">00:00:00</span>
-                                    </div>
-                                </div>
+                        <div class="space-y-3 bg-slate-50 p-5 rounded-xl border border-slate-200 text-xs">
+                            <h4 class="font-bold text-slate-800 border-b pb-1">Attendance Rules & Status:</h4>
+                            <p><strong>Current Status:</strong> <span id="attStatusText" class="text-rose-600 font-bold">OFF-DUTY</span></p>
+                            <p><strong>Check-In Time:</strong> <span id="attCheckInTime">--:--</span></p>
+                            <p><strong>Check-Out Time:</strong> <span id="attCheckOutTime">--:--</span></p>
+                            <p><strong>Late Mark:</strong> <span id="attLateMark" class="font-bold text-slate-500">None</span></p>
+                            <div class="border-t pt-2 text-slate-500 text-[11px] space-y-1">
+                                <p>• Complete a mandatory 8-hour shift for full day credit.</p>
+                                <p>• Early check-outs will be flagged automatically in salary computation.</p>
                             </div>
-
-                            <button id="checkInBtn" onclick="toggleShiftCheckIn()" class="w-full bg-cnGreen hover:bg-cnGreen-dark text-white font-bold py-3.5 rounded-xl shadow-lg shadow-cnGreen/20 text-xs transition flex items-center justify-center space-x-2">
-                                <i class="fa-solid fa-right-to-bracket"></i>
-                                <span>Check-In (Start 8-Hour Shift)</span>
-                            </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="idCard" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center border-b pb-3">
-                        <div>
-                            <h3 class="text-base font-extrabold text-slate-900"><i class="fa-solid fa-id-card text-indigo-600 mr-2"></i>Official Corporate ID Card</h3>
-                            <p class="text-xs text-slate-400">Printable dual-sided employee identification pass.</p>
-                        </div>
-                        <button onclick="window.print()" class="bg-slate-900 hover:bg-slate-800 text-white text-xs px-4 py-2 rounded-xl font-bold transition flex items-center space-x-1.5 shadow">
-                            <i class="fa-solid fa-print"></i>
-                            <span>Print ID Card</span>
-                        </button>
-                    </div>
-
-                    <div class="printable-area flex flex-wrap justify-center gap-8 py-8 bg-slate-100 rounded-2xl border border-slate-200">
-                        <!-- FRONT CARD -->
-                        <div class="w-[300px] h-[480px] bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-200 relative flex flex-col justify-between">
-                            <div class="bg-gradient-to-br from-cnNavy via-slate-900 to-cnNavy h-36 p-4 text-white relative rounded-b-[40%] flex flex-col items-center">
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-7 h-7 bg-white rounded flex items-center justify-center p-0.5">
-                                        <img src="logo.png" alt="CN" class="max-h-full max-w-full object-contain" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'font-black text-cnOrange text-xs\'>CN</span>';">
-                                    </div>
-                                    <span class="font-black tracking-wide text-sm">CAREER NEST</span>
-                                </div>
-                                <p class="text-[8px] text-cnGreen-light font-bold uppercase tracking-widest mt-0.5">Nurture Today, Achieve Tomorrow</p>
-                            </div>
-
-                            <div class="absolute top-20 left-1/2 -translate-x-1/2">
-                                <img id="idFrontPhoto" src="https://ui-avatars.com/api/?name=User" class="w-28 h-28 rounded-full border-4 border-white shadow-xl object-cover bg-white">
-                            </div>
-
-                            <div class="pt-16 pb-6 px-6 text-center space-y-1">
-                                <h2 id="idFrontName" class="text-base font-black text-slate-900">--</h2>
-                                <p id="idFrontDesig" class="text-xs font-bold text-cnOrange mb-3">--</p>
-
-                                <div class="text-left text-[11px] space-y-1.5 text-slate-600 bg-slate-50 p-3 rounded-2xl border border-slate-100">
-                                    <p class="flex justify-between"><strong>Emp ID:</strong> <span id="idFrontEmpId" class="font-bold text-slate-800">--</span></p>
-                                    <p class="flex justify-between"><strong>Blood Group:</strong> <span id="idFrontBlood" class="font-bold text-slate-800">--</span></p>
-                                    <p class="flex justify-between"><strong>Phone:</strong> <span id="idFrontPhone" class="font-bold text-slate-800">--</span></p>
-                                    <p class="flex justify-between"><strong>Email:</strong> <span id="idFrontEmail" class="truncate max-w-[130px] font-bold text-slate-800">--</span></p>
-                                </div>
-                            </div>
-
-                            <div class="bg-gradient-to-r from-cnOrange to-cnGreen h-3 w-full"></div>
-                        </div>
-
-                        <!-- BACK CARD -->
-                        <div class="w-[300px] h-[480px] bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-200 relative flex flex-col justify-between">
-                            <div class="bg-gradient-to-br from-cnNavy via-slate-900 to-cnNavy h-16 p-3 text-white flex items-center justify-center">
-                                <p class="text-xs font-black uppercase tracking-widest text-cnOrange">Card Verification</p>
-                            </div>
-
-                            <div class="p-5 text-[10px] space-y-3 text-slate-600 flex-1 flex flex-col justify-between">
-                                <ul class="list-disc pl-3 space-y-1 text-justify leading-tight">
-                                    <li>This ID card remains the sole property of CAREER NEST.</li>
-                                    <li>Cardholder must carry this ID at all times during duty hours.</li>
-                                    <li>If lost or found, return immediately to company address.</li>
-                                </ul>
-
-                                <div class="space-y-1 bg-slate-50 p-3 rounded-2xl border border-slate-100">
-                                    <p><strong>Joining Date:</strong> <span id="idBackDoj">--</span></p>
-                                    <p><strong>Expiry Date:</strong> <span id="idBackExpiry">--</span></p>
-                                    <p><strong>Date of Birth:</strong> <span id="idBackDob">--</span></p>
-                                </div>
-
-                                <div class="text-center pt-2">
-                                    <p class="font-extrabold text-slate-900 text-xs">Mohd Zafar Ali</p>
-                                    <p class="text-[8px] text-slate-400 uppercase tracking-widest font-bold">Authorized Signatory</p>
-                                </div>
-
-                                <div class="text-center text-[9px] text-slate-500 border-t pt-2 space-y-0.5">
-                                    <p class="font-bold text-slate-800">Company Office Address:</p>
-                                    <p>426/1 second floor infront of bank of india labour chowk yadav colony jabalpur mp 482002</p>
-                                    <p class="font-bold text-cnGreen">Phone: 9111319711</p>
-                                </div>
-                            </div>
-
-                            <div class="bg-cnNavy h-4 w-full flex items-center justify-center text-white font-bold text-[8px] uppercase tracking-widest">CAREER NEST HRMS</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            <!-- 3. TARGETS & WORK LOGS -->
             <div id="targets" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-                    <div class="border-b pb-3">
-                        <h3 class="text-base font-extrabold text-slate-900"><i class="fa-solid fa-bullseye text-rose-500 mr-2"></i>Target Tracker & Daily CRM Log</h3>
-                        <p class="text-xs text-slate-400">Monitor monthly performance goals and record daily client meetings / follow-ups.</p>
-                    </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                    <h3 class="text-base font-bold text-cnNavy border-b pb-2"><i class="fa-solid fa-bullseye text-cnGreen mr-2"></i>CRM Target Tracker & Daily Work Sheet</h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 text-center">
-                            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Assigned Monthly Target</p>
-                            <h2 id="targetAssigned" class="text-3xl font-black text-slate-900 mt-1">100</h2>
+                        <div class="bg-slate-50 p-4 rounded-xl border text-center">
+                            <p class="text-xs text-slate-500 font-bold uppercase">Assigned Monthly Target</p>
+                            <h2 id="targetAssigned" class="text-2xl font-black text-cnNavy mt-1">0</h2>
                         </div>
-                        <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-200 text-center">
-                            <p class="text-xs text-emerald-700 font-bold uppercase tracking-wider">Completed Work</p>
-                            <h2 id="targetCompleted" class="text-3xl font-black text-emerald-600 mt-1">0</h2>
+                        <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200 text-center">
+                            <p class="text-xs text-cnGreen font-bold uppercase">Completed Work</p>
+                            <h2 id="targetCompleted" class="text-2xl font-black text-cnGreen mt-1">0</h2>
                         </div>
-                        <div class="bg-amber-50 p-5 rounded-2xl border border-amber-200 text-center">
-                            <p class="text-xs text-amber-700 font-bold uppercase tracking-wider">Remaining Balance</p>
-                            <h2 id="targetRemaining" class="text-3xl font-black text-amber-600 mt-1">100</h2>
+                        <div class="bg-orange-50 p-4 rounded-xl border border-orange-200 text-center">
+                            <p class="text-xs text-cnOrange font-bold uppercase">Remaining Target</p>
+                            <h2 id="targetRemaining" class="text-2xl font-black text-cnOrange mt-1">0</h2>
                         </div>
                     </div>
 
-                    <div class="border-t pt-4 space-y-4">
-                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Submit Daily Follow-up Sheet / Work Entry</h4>
+                    <div class="border-t pt-4 space-y-3">
+                        <h4 class="text-xs font-bold text-slate-800">Add Daily Follow-up / Work Log</h4>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                            <input type="text" id="logClient" placeholder="Client Name / Business Contact" class="border p-2.5 rounded-xl outline-none focus:border-cnOrange">
-                            <input type="text" id="logDetails" placeholder="Meeting Summary / Progress Notes" class="border p-2.5 rounded-xl outline-none focus:border-cnOrange">
-                            <input type="number" id="logUnits" placeholder="Units Completed Today" class="border p-2.5 rounded-xl outline-none focus:border-cnOrange">
+                            <input type="text" id="logClient" placeholder="Client / Prospect Name" class="border p-2 rounded-lg">
+                            <input type="text" id="logDetails" placeholder="Work Summary / Follow-up Notes" class="border p-2 rounded-lg">
+                            <input type="number" id="logUnits" placeholder="Units Completed" class="border p-2 rounded-lg">
                         </div>
-                        <button onclick="submitWorkLog()" class="bg-cnGreen hover:bg-cnGreen-dark text-white text-xs font-bold py-2.5 px-6 rounded-xl shadow-md shadow-cnGreen/20 transition">
-                            Save Log & Deduct From Target Balance
+                        <button onclick="submitWorkLog()" class="bg-cnOrange hover:bg-cnOrange-dark text-white text-xs font-bold py-2 px-5 rounded-lg shadow-sm">
+                            Save Log & Deduct Target
                         </button>
                     </div>
                 </div>
             </div>
 
+            <!-- 4. SALARY SLIP -->
             <div id="payroll" class="tab-content hidden space-y-6">
-                
-                <!-- SALARY UNSET VIEW -->
-                <div id="salaryLockedView" class="hidden bg-amber-50 border-2 border-amber-200 p-8 rounded-3xl text-center space-y-3">
-                    <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow">
+                <!-- LOCKED VIEW -->
+                <div id="salaryLockedView" class="hidden bg-amber-50 border-2 border-amber-300 p-8 rounded-2xl text-center space-y-3">
+                    <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-2xl">
                         <i class="fa-solid fa-lock"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-amber-900">Salary Structure Pending Setup</h3>
+                    <h3 class="text-lg font-bold text-amber-800">Salary Slip Access Locked</h3>
                     <p class="text-xs text-amber-700 max-w-md mx-auto">
-                        Your monthly salary parameters have not yet been initialized by Super Admin / HR. Salary slip generation will unlock automatically once configured.
+                        Aapki salary structure abhi tak Admin / Super Admin dwara configure nahi hui hai. Admin dwara configure karne ke baad payslip yahan generate ho jayegi.
                     </p>
                 </div>
 
-                <!-- SALARY SLIP VIEW -->
-                <div id="salaryActiveView" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center border-b pb-3">
-                        <div>
-                            <h3 class="text-base font-extrabold text-slate-900"><i class="fa-solid fa-file-invoice-dollar text-emerald-600 mr-2"></i>Corporate Salary Statement</h3>
-                            <p class="text-xs text-slate-400">Official monthly payslip document generation.</p>
-                        </div>
-                        <button onclick="window.print()" class="bg-slate-900 hover:bg-slate-800 text-white text-xs px-4 py-2 rounded-xl font-bold transition flex items-center space-x-1.5 shadow">
-                            <i class="fa-solid fa-print"></i>
-                            <span>Print Payslip</span>
-                        </button>
+                <!-- ACTIVE PAYSLIP VIEW -->
+                <div id="salaryActiveView" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <h3 class="text-base font-bold text-cnNavy"><i class="fa-solid fa-file-invoice-dollar text-cnGreen mr-2"></i>Corporate Payslip</h3>
+                        <button onclick="window.print()" class="bg-cnNavy hover:bg-cnNavy-light text-white text-xs px-3 py-1.5 rounded-lg font-bold"><i class="fa-solid fa-print mr-1"></i> Print Payslip</button>
                     </div>
 
-                    <!-- EXACT CAREER NEST PAYSLIP LAYOUT -->
-                    <div class="printable-area border-2 border-slate-300 p-6 rounded-2xl bg-white space-y-4 text-xs font-sans">
-                        
-                        <div class="flex justify-between items-start border-b-2 border-slate-800 pb-4">
+                    <div class="printable-area border p-6 rounded-2xl bg-white space-y-4 text-xs">
+                        <div class="flex justify-between items-center border-b pb-4">
                             <div class="flex items-center space-x-3">
-                                <div class="w-14 h-14 bg-white border border-slate-200 rounded-xl p-1 flex items-center justify-center shadow-sm">
-                                    <img src="logo.png" alt="CN Logo" class="max-h-full max-w-full object-contain" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'font-black text-cnOrange text-xl\'>CN</span>';">
-                                </div>
+                                <img src="logo.png" alt="Logo" class="h-12 object-contain" onerror="this.onerror=null; this.src='https://via.placeholder.com/120x40?text=CAREER+NEST';">
                                 <div>
-                                    <h2 class="text-xl font-black text-slate-900 tracking-tight">CAREER NEST</h2>
-                                    <p class="text-[9px] text-slate-600 font-semibold max-w-sm">
-                                        537, Shanti Nagar, Infront of Ryan International School, Damohnaka, Jabalpur, Madhya Pradesh - 482002
-                                    </p>
-                                    <p class="text-[9px] text-cnGreen font-bold">Mobile: 9111319711</p>
+                                    <h2 class="text-lg font-extrabold text-cnNavy">CAREER NEST</h2>
+                                    <p class="text-[9px] text-cnGreen font-bold uppercase">Nurture Today, Achieve Tomorrow</p>
+                                    <p class="text-[9px] text-slate-500">426/1 second floor infront of bank of india labour chowk yadav colony jabalpur mp 482002</p>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <span class="text-xs font-black bg-cnNavy text-white px-3 py-1 rounded-md uppercase tracking-wider inline-block">SALARY SLIP</span>
-                                <p id="slipGeneratedDate" class="text-[10px] text-slate-500 font-semibold mt-1">Date: 19/09/2026</p>
+                                <h3 class="font-bold text-slate-700">Salary Slip</h3>
+                                <p class="text-[10px] text-slate-400">Generated On: 19/09/2026</p>
                             </div>
                         </div>
 
-                        <!-- EMPLOYEE DETAILS GRID -->
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200 text-[11px]">
-                            <p><strong>Employee Name:</strong> <span id="slipName" class="text-slate-900">--</span></p>
-                            <p><strong>Employee Code:</strong> <span id="slipEmpId" class="text-slate-900">--</span></p>
-                            <p><strong>Designation:</strong> <span id="slipDesig" class="text-slate-900">--</span></p>
-                            <p><strong>Salary Month:</strong> <span id="slipMonth" class="text-slate-900">Current Month</span></p>
-                            <p><strong>Employee Mobile:</strong> <span id="slipMobile" class="text-slate-900">--</span></p>
-                            <p><strong>Pay Date:</strong> <span id="slipPayDate" class="text-slate-900">End of Month</span></p>
-                            <p class="col-span-2"><strong>Pay Mode:</strong> <span id="slipPayMode" class="text-slate-900">Bank Transfer / NEFT</span></p>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-3 rounded-xl border text-[11px]">
+                            <p><strong>Employee ID:</strong> <span id="slipEmpId">--</span></p>
+                            <p><strong>Name:</strong> <span id="slipName">--</span></p>
+                            <p><strong>Designation:</strong> <span id="slipDesig">--</span></p>
+                            <p><strong>Bank Acc:</strong> <span id="slipAcc">--</span></p>
                         </div>
 
-                        <!-- EARNINGS AND DEDUCTIONS TABLES -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <table class="w-full border text-left rounded-lg overflow-hidden border-slate-300">
-                                <thead class="bg-emerald-700 text-white font-bold text-[11px]">
-                                    <tr><th class="p-2">EARNINGS</th><th class="p-2 text-right">AMOUNT (₹)</th></tr>
+                            <table class="w-full border text-left rounded-lg overflow-hidden">
+                                <thead class="bg-emerald-100 text-emerald-900 font-bold">
+                                    <tr><th class="p-2">Earnings</th><th class="p-2 text-right">Amount (₹)</th></tr>
                                 </thead>
-                                <tbody class="divide-y divide-slate-200 text-slate-700 text-[11px]">
-                                    <tr><td class="p-2">Basic Salary</td><td class="p-2 text-right font-semibold" id="slipBasic">0.00</td></tr>
-                                    <tr><td class="p-2">House Rent Allowance (HRA)</td><td class="p-2 text-right font-semibold" id="slipHra">0.00</td></tr>
-                                    <tr><td class="p-2">Conveyance Allowance</td><td class="p-2 text-right font-semibold" id="slipConveyance">0.00</td></tr>
-                                    <tr><td class="p-2">Travel Allowance</td><td class="p-2 text-right font-semibold" id="slipTravel">0.00</td></tr>
-                                    <tr><td class="p-2">Incentive</td><td class="p-2 text-right font-semibold text-emerald-600" id="slipIncentive">0.00</td></tr>
-                                    <tr><td class="p-2">Approved Expenses</td><td class="p-2 text-right font-semibold" id="slipApprovedExp">0.00</td></tr>
-                                    <tr class="bg-emerald-50 font-bold text-slate-900">
-                                        <td class="p-2">Gross Earnings</td>
-                                        <td class="p-2 text-right" id="slipGross">0.00</td>
-                                    </tr>
+                                <tbody class="divide-y text-slate-700">
+                                    <tr><td class="p-2">Base Monthly Salary</td><td class="p-2 text-right" id="slipBase">₹ 0</td></tr>
+                                    <tr><td class="p-2">Incentive</td><td class="p-2 text-right text-cnGreen font-bold" id="slipIncentive">₹ 0</td></tr>
                                 </tbody>
                             </table>
 
-                            <table class="w-full border text-left rounded-lg overflow-hidden border-slate-300">
-                                <thead class="bg-rose-700 text-white font-bold text-[11px]">
-                                    <tr><th class="p-2">DEDUCTIONS</th><th class="p-2 text-right">AMOUNT (₹)</th></tr>
+                            <table class="w-full border text-left rounded-lg overflow-hidden">
+                                <thead class="bg-rose-100 text-rose-900 font-bold">
+                                    <tr><th class="p-2">Deductions</th><th class="p-2 text-right">Amount (₹)</th></tr>
                                 </thead>
-                                <tbody class="divide-y divide-slate-200 text-slate-700 text-[11px]">
-                                    <tr><td class="p-2">Provident Fund (PF)</td><td class="p-2 text-right font-semibold" id="slipPf">0.00</td></tr>
-                                    <tr><td class="p-2">ESI</td><td class="p-2 text-right font-semibold" id="slipEsi">0.00</td></tr>
-                                    <tr><td class="p-2">Group Insurance</td><td class="p-2 text-right font-semibold" id="slipInsurance">0.00</td></tr>
-                                    <tr><td class="p-2">Loan / Advance Recovery</td><td class="p-2 text-right font-semibold text-rose-600" id="slipLoan">0.00</td></tr>
-                                    <tr><td class="p-2">Professional Tax (PT) / TDS</td><td class="p-2 text-right font-semibold" id="slipTax">0.00</td></tr>
-                                    <tr class="bg-rose-50 font-bold text-slate-900">
-                                        <td class="p-2">Total Deductions</td>
-                                        <td class="p-2 text-right" id="slipTotalDed">0.00</td>
-                                    </tr>
+                                <tbody class="divide-y text-slate-700">
+                                    <tr><td class="p-2">PF Deduction</td><td class="p-2 text-right" id="slipPf">₹ 0</td></tr>
+                                    <tr><td class="p-2">ESI Deduction</td><td class="p-2 text-right" id="slipEsi">₹ 0</td></tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <!-- NET PAYABLE -->
-                        <div class="bg-cnNavy text-white p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-2">
-                            <div>
-                                <p class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">NET SALARY PAYABLE</p>
-                                <p class="text-xs text-cnGreen-light font-bold" id="slipInWords">Rupees Zero Only</p>
-                            </div>
-                            <span id="slipNetPay" class="text-2xl font-black text-cnOrange">₹ 0.00</span>
-                        </div>
-
-                        <!-- FOOTER NOTE -->
-                        <div class="border-t pt-3 text-[9px] text-slate-500 space-y-1">
-                            <p class="font-bold text-slate-700 uppercase">IMPORTANT NOTE:</p>
-                            <p>• This is an electronically generated salary slip by CAREER NEST HRMS System.</p>
-                            <p>• No physical signature is required for this electronic salary slip.</p>
-                            <p>• Official Company Office Address: 426/1 second floor infront of bank of india labour chowk yadav colony jabalpur mp 482002.</p>
+                        <div class="bg-cnNavy text-white p-4 rounded-xl flex justify-between items-center text-sm font-bold">
+                            <span>NET SALARY PAYABLE</span>
+                            <span id="slipNetPay" class="text-base text-cnOrange">₹ 0</span>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- 5. LEAVES & EXPENSES -->
             <div id="requests" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-                    <div class="border-b pb-3">
-                        <h3 class="text-base font-extrabold text-slate-900"><i class="fa-solid fa-hand-holding-dollar text-amber-500 mr-2"></i>Leaves & Expense Claims</h3>
-                        <p class="text-xs text-slate-400">Submit requests for leave approvals or business expense reimbursements.</p>
-                    </div>
-
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                    <h3 class="text-base font-bold text-cnNavy border-b pb-2"><i class="fa-solid fa-receipt text-cnOrange mr-2"></i>Leaves & Claims</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- LEAVE FORM -->
-                        <div class="border p-5 rounded-2xl space-y-3 bg-slate-50">
-                            <h4 class="text-xs font-extrabold text-slate-800 uppercase tracking-wider">Apply For Leave</h4>
-                            <div class="space-y-2 text-xs">
-                                <div>
-                                    <label class="font-bold text-slate-600 block mb-1">Leave Date</label>
-                                    <input type="date" id="leaveDate" class="w-full border p-2 rounded-xl outline-none focus:border-cnOrange">
-                                </div>
-                                <div>
-                                    <label class="font-bold text-slate-600 block mb-1">Reason for Leave</label>
-                                    <textarea id="leaveReason" placeholder="State reason..." class="w-full border p-2 rounded-xl outline-none focus:border-cnOrange" rows="3"></textarea>
-                                </div>
-                                <button onclick="submitLeaveRequest()" class="w-full bg-cnNavy hover:bg-slate-800 text-white text-xs font-bold py-2.5 rounded-xl shadow transition">
-                                    Submit Leave Request
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- EXPENSE FORM -->
-                        <div class="border p-5 rounded-2xl space-y-3 bg-slate-50">
-                            <h4 class="text-xs font-extrabold text-slate-800 uppercase tracking-wider">Submit Expense / Loan Claim</h4>
-                            <div class="space-y-2 text-xs">
-                                <div>
-                                    <label class="font-bold text-slate-600 block mb-1">Claim Type</label>
-                                    <select id="claimType" class="w-full border p-2 rounded-xl outline-none focus:border-cnOrange">
-                                        <option value="Expense Reimbursement">Expense Reimbursement (+ Add to Salary)</option>
-                                        <option value="Salary Advance / Loan">Salary Advance / Loan (- Deduct from Salary)</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="font-bold text-slate-600 block mb-1">Amount (₹)</label>
-                                    <input type="number" id="claimAmount" placeholder="Amount in ₹" class="w-full border p-2 rounded-xl outline-none focus:border-cnOrange">
-                                </div>
-                                <div>
-                                    <label class="font-bold text-slate-600 block mb-1">Details / Bill Notes</label>
-                                    <input type="text" id="claimNotes" placeholder="Client travel, petrol bill, etc." class="w-full border p-2 rounded-xl outline-none focus:border-cnOrange">
-                                </div>
-                                <button onclick="submitExpenseClaim()" class="w-full bg-cnOrange hover:bg-cnOrange-dark text-white text-xs font-bold py-2.5 rounded-xl shadow transition">
-                                    Submit Claim For HR Approval
-                                </button>
-                            </div>
+                        <div class="border p-4 rounded-xl space-y-3 bg-slate-50">
+                            <h4 class="text-xs font-bold text-slate-800">Apply for Leave</h4>
+                            <input type="date" id="leaveDate" class="w-full border p-2 rounded text-xs">
+                            <textarea id="leaveReason" placeholder="Reason for Leave" class="w-full border p-2 rounded text-xs" rows="2"></textarea>
+                            <button onclick="alert('Leave Request Submitted!')" class="w-full bg-cnNavy text-white text-xs font-bold py-2 rounded">Submit Request</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="policies" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-                    <div class="border-b pb-3">
-                        <h3 class="text-base font-extrabold text-slate-900"><i class="fa-solid fa-file-shield text-teal-600 mr-2"></i>Career Nest Corporate Policies</h3>
-                        <p class="text-xs text-slate-400">All active employees must read and accept company guidelines.</p>
+            <!-- 6. COMPANY POLICIES -->
+            <div id="companyPolicies" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-base font-bold text-cnNavy border-b pb-2"><i class="fa-solid fa-file-contract text-cnOrange mr-2"></i>Company Policies</h3>
+                    <div class="space-y-3 text-xs text-slate-600 bg-slate-50 p-4 rounded-xl border">
+                        <p class="font-bold text-slate-800">1. Attendance & Working Hours</p>
+                        <p>Employees are required to fulfill 8 hours of duty daily. Late logins will automatically be marked in the portal.</p>
+                        <p class="font-bold text-slate-800 mt-2">2. Confidentiality</p>
+                        <p>Company data, client contacts, and internal reports must remain strictly confidential.</p>
                     </div>
-
-                    <div class="space-y-4 text-xs text-slate-700">
-                        <div class="p-4 bg-slate-50 rounded-2xl border space-y-2">
-                            <h4 class="font-extrabold text-slate-800 text-sm">1. Attendance & Shift Integrity</h4>
-                            <p>Daily shift requires a minimum of 8 active working hours. Early checkout without prior manager permission will result in a half-day deduction.</p>
-                        </div>
-
-                        <div class="p-4 bg-slate-50 rounded-2xl border space-y-2">
-                            <h4 class="font-extrabold text-slate-800 text-sm">2. Target Compliance & Incentives</h4>
-                            <p>Monthly target expectations are set by management. Achieving targets opens incentive brackets that are directly disbursed in monthly payslips.</p>
-                        </div>
-
-                        <div class="p-4 bg-slate-50 rounded-2xl border space-y-2">
-                            <h4 class="font-extrabold text-slate-800 text-sm">3. Data Security & Confidentiality</h4>
-                            <p>Employee client information and CRM follow-up records are private company assets and must not be shared externally.</p>
-                        </div>
-
-                        <div class="pt-2 border-t flex items-center space-x-3">
-                            <input type="checkbox" id="policyCheckbox" onchange="togglePolicyAcceptance()" class="w-4 h-4 text-cnOrange rounded accent-cnOrange">
-                            <label for="policyCheckbox" class="font-bold text-slate-800">I have read, understood, and agree to abide by all Career Nest company policies.</label>
-                        </div>
-                    </div>
+                    <button onclick="alert('Policies Accepted Successfully!')" class="bg-cnGreen hover:bg-cnGreen-dark text-white text-xs font-bold py-2 px-5 rounded-lg">Accept Policies</button>
                 </div>
             </div>
 
-            <div id="helpdesk" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-                    <div class="border-b pb-3">
-                        <h3 class="text-base font-extrabold text-slate-900"><i class="fa-solid fa-headset text-sky-500 mr-2"></i>Employee Helpdesk & Problem Escalation</h3>
-                        <p class="text-xs text-slate-400">Facing issues with attendance, salary, or workplace? Escalate directly to HR.</p>
-                    </div>
+            <!-- ADMIN PANELS -->
 
-                    <div class="space-y-3 text-xs">
+            <!-- 7. SUPER ADMIN PROFILE SETUP PANEL -->
+            <div id="adminProfileSetup" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-base font-bold text-cnNavy border-b pb-2"><i class="fa-solid fa-user-shield text-cnOrange mr-2"></i>Super Admin Profile Management</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                         <div>
-                            <label class="font-bold text-slate-700 block mb-1">Issue Category</label>
-                            <select id="helpCategory" class="w-full border p-2.5 rounded-xl outline-none focus:border-cnOrange">
-                                <option>Salary / Payslip Query</option>
-                                <option>Attendance Correction</option>
-                                <option>Target Dispute</option>
-                                <option>HR / Management Grievance</option>
-                            </select>
+                            <label class="font-semibold text-slate-600">Full Name *</label>
+                            <input type="text" id="saName" class="w-full border p-2 rounded mt-0.5" placeholder="Super Admin Name">
                         </div>
                         <div>
-                            <label class="font-bold text-slate-700 block mb-1">Problem Description</label>
-                            <textarea id="helpDetails" placeholder="Describe issue in detail..." class="w-full border p-2.5 rounded-xl outline-none focus:border-cnOrange" rows="4"></textarea>
-                        </div>
-                        <button onclick="submitHelpdeskTicket()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-6 rounded-xl shadow">
-                            Escalate Ticket To Careernestorg@gmail.com
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- ADMIN: PUBLISH ANNOUNCEMENT -->
-            <div id="adminAnnounce" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-                    <div class="border-b pb-3">
-                        <h3 class="text-base font-extrabold text-slate-900"><i class="fa-solid fa-bullhorn text-cnOrange mr-2"></i>Publish Company Announcement</h3>
-                        <p class="text-xs text-slate-400">Broadcast notices to all employee dashboard popups instantly.</p>
-                    </div>
-
-                    <div class="space-y-3 text-xs">
-                        <textarea id="adminAnnounceInput" placeholder="Type official announcement message..." class="w-full border p-3 rounded-2xl outline-none focus:border-cnOrange" rows="4"></textarea>
-                        <button onclick="publishAnnouncement()" class="bg-cnOrange hover:bg-cnOrange-dark text-white font-bold py-3 px-6 rounded-xl shadow">
-                            Publish Broadcast Notice
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ADMIN: SALARY & TARGET MASTER -->
-            <div id="adminSalary" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-5">
-                    <div class="border-b pb-3">
-                        <h3 class="text-base font-extrabold text-slate-900"><i class="fa-solid fa-sliders text-cnGreen mr-2"></i>Salary & Target Master Configuration</h3>
-                        <p class="text-xs text-slate-400">Configure base salary, allowances, deductions, and monthly target units for employees.</p>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
-                        <div class="sm:col-span-3 bg-slate-50 p-3 rounded-2xl border">
-                            <label class="font-bold text-slate-800 block mb-1">Target Employee Mobile ID *</label>
-                            <input type="text" id="masterEmpId" placeholder="e.g. 9111319711" class="w-full border p-2.5 rounded-xl font-bold bg-white">
-                        </div>
-
-                        <div>
-                            <label class="font-bold text-slate-700 block mb-1">Basic Monthly Salary (₹) *</label>
-                            <input type="number" id="masterBaseSalary" placeholder="25000" class="w-full border p-2 rounded-xl">
+                            <label class="font-semibold text-slate-600">Father's Name</label>
+                            <input type="text" id="saFather" class="w-full border p-2 rounded mt-0.5" placeholder="Father Name">
                         </div>
                         <div>
-                            <label class="font-bold text-slate-700 block mb-1">HRA Allowance (₹)</label>
-                            <input type="number" id="masterHra" placeholder="5000" class="w-full border p-2 rounded-xl">
+                            <label class="font-semibold text-slate-600">Mother's Name</label>
+                            <input type="text" id="saMother" class="w-full border p-2 rounded mt-0.5" placeholder="Mother Name">
                         </div>
                         <div>
-                            <label class="font-bold text-slate-700 block mb-1">Conveyance Allowance (₹)</label>
-                            <input type="number" id="masterConveyance" placeholder="2000" class="w-full border p-2 rounded-xl">
+                            <label class="font-semibold text-slate-600">Date of Birth (DOB)</label>
+                            <input type="date" id="saDob" class="w-full border p-2 rounded mt-0.5">
                         </div>
                         <div>
-                            <label class="font-bold text-slate-700 block mb-1">Travel Allowance (₹)</label>
-                            <input type="number" id="masterTravel" placeholder="1500" class="w-full border p-2 rounded-xl">
+                            <label class="font-semibold text-slate-600">Mobile Number (Login ID)</label>
+                            <input type="text" id="saMobile" class="w-full border p-2 rounded mt-0.5 bg-slate-100" readonly>
                         </div>
                         <div>
-                            <label class="font-bold text-slate-700 block mb-1">Incentive Target Amount (₹)</label>
-                            <input type="number" id="masterIncentive" placeholder="3000" class="w-full border p-2 rounded-xl">
+                            <label class="font-semibold text-slate-600">Email Address</label>
+                            <input type="email" id="saEmail" class="w-full border p-2 rounded mt-0.5" placeholder="careernestorg@gmail.com">
                         </div>
                         <div>
-                            <label class="font-bold text-slate-700 block mb-1">Monthly Target Units</label>
-                            <input type="number" id="masterTarget" placeholder="100" class="w-full border p-2 rounded-xl">
+                            <label class="font-semibold text-slate-600">Bank Account No.</label>
+                            <input type="text" id="saBankAcc" class="w-full border p-2 rounded mt-0.5" placeholder="Account Number">
                         </div>
                         <div>
-                            <label class="font-bold text-slate-700 block mb-1">Provident Fund (PF ₹)</label>
-                            <input type="number" id="masterPf" placeholder="1800" class="w-full border p-2 rounded-xl">
-                        </div>
-                        <div>
-                            <label class="font-bold text-slate-700 block mb-1">ESI Deduction (₹)</label>
-                            <input type="number" id="masterEsi" placeholder="500" class="w-full border p-2 rounded-xl">
-                        </div>
-                        <div>
-                            <label class="font-bold text-slate-700 block mb-1">Group Insurance (₹)</label>
-                            <input type="number" id="masterInsurance" placeholder="300" class="w-full border p-2 rounded-xl">
+                            <label class="font-semibold text-slate-600">IFSC Code</label>
+                            <input type="text" id="saIfsc" class="w-full border p-2 rounded mt-0.5" placeholder="SBIN0001234">
                         </div>
                     </div>
-
-                    <button onclick="saveMasterSalaryConfig()" class="bg-cnGreen hover:bg-cnGreen-dark text-white text-xs font-bold py-3 px-6 rounded-xl shadow-lg shadow-cnGreen/20">
-                        Set & Unlock Employee Payslip Structure
+                    <button onclick="saveSuperAdminProfile()" class="bg-cnOrange hover:bg-cnOrange-dark text-white text-xs font-bold py-2.5 px-6 rounded-lg shadow-sm mt-2">
+                        Save Super Admin Profile
                     </button>
                 </div>
             </div>
 
-            <!-- ADMIN: EMPLOYEE DIRECTORY -->
-            <div id="employeeList" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-                    <div class="flex justify-between items-center border-b pb-3">
+            <!-- 8. ADMIN ANNOUNCEMENT -->
+            <div id="adminAnnounce" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-base font-bold text-cnNavy border-b pb-2"><i class="fa-solid fa-bullhorn text-cnGreen mr-2"></i>Publish Announcement</h3>
+                    <div class="space-y-3 text-xs">
+                        <textarea id="adminAnnounceInput" placeholder="Type company announcement message..." class="w-full border p-2 rounded-lg" rows="3"></textarea>
+                        <button onclick="publishAnnouncement()" class="bg-cnGreen text-white font-bold py-2 px-5 rounded-lg">Publish Announcement</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9. ADMIN SALARY MASTER CONTROL -->
+            <div id="adminSalary" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-base font-bold text-cnNavy border-b pb-2"><i class="fa-solid fa-sliders text-cnOrange mr-2"></i>Configure Employee Salary & Target Master</h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
                         <div>
-                            <h3 class="text-base font-extrabold text-slate-900"><i class="fa-solid fa-users text-indigo-600 mr-2"></i>Corporate Employee Directory</h3>
-                            <p class="text-xs text-slate-400">View and edit registered staff members.</p>
+                            <label class="font-semibold text-slate-600">Employee Mobile (Login ID) *</label>
+                            <input type="text" id="masterEmpId" placeholder="Enter Employee Mobile" class="w-full border p-2 rounded mt-1 font-bold bg-slate-50">
                         </div>
-                        <button onclick="renderEmployeeDirectory()" class="text-xs bg-slate-100 hover:bg-slate-200 font-bold px-3.5 py-2 rounded-xl text-slate-700">
-                            <i class="fa-solid fa-rotate mr-1"></i> Refresh List
-                        </button>
+                        <div>
+                            <label class="font-semibold text-slate-600">Base Monthly Salary (₹) *</label>
+                            <input type="number" id="masterBaseSalary" placeholder="25000" class="w-full border p-2 rounded mt-1">
+                        </div>
+                        <div>
+                            <label class="font-semibold text-slate-600">Monthly Target Units</label>
+                            <input type="number" id="masterTarget" placeholder="100" class="w-full border p-2 rounded mt-1">
+                        </div>
+                        <div>
+                            <label class="font-semibold text-slate-600">Incentive Amount (₹)</label>
+                            <input type="number" id="masterIncentive" placeholder="5000" class="w-full border p-2 rounded mt-1">
+                        </div>
+                        <div>
+                            <label class="font-semibold text-slate-600">PF Deduction (₹)</label>
+                            <input type="number" id="masterPf" placeholder="1800" class="w-full border p-2 rounded mt-1">
+                        </div>
+                        <div>
+                            <label class="font-semibold text-slate-600">ESI Deduction (₹)</label>
+                            <input type="number" id="masterEsi" placeholder="500" class="w-full border p-2 rounded mt-1">
+                        </div>
                     </div>
 
-                    <div class="overflow-x-auto custom-scrollbar">
-                        <table class="w-full text-left text-xs border border-slate-200 rounded-xl overflow-hidden">
-                            <thead class="bg-slate-100 text-slate-700 font-bold">
+                    <button onclick="saveMasterSalaryConfig()" class="bg-cnGreen hover:bg-cnGreen-dark text-white text-xs font-bold py-2.5 px-6 rounded-lg shadow-sm">
+                        Save & Unlock Payslip
+                    </button>
+                </div>
+            </div>
+
+            <!-- 10. EMPLOYEE DIRECTORY -->
+            <div id="employeeList" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <h3 class="text-base font-bold text-cnNavy"><i class="fa-solid fa-users text-slate-500 mr-2"></i>Employee Directory</h3>
+                        <button onclick="renderEmployeeDirectory()" class="text-xs bg-slate-100 hover:bg-slate-200 font-bold px-3 py-1 rounded text-slate-700"><i class="fa-solid fa-rotate mr-1"></i> Refresh List</button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border border-slate-200 rounded-lg">
+                            <thead class="bg-slate-100 text-slate-700">
                                 <tr>
-                                    <th class="p-3 border">Emp ID</th>
-                                    <th class="p-3 border">Name</th>
-                                    <th class="p-3 border">Designation</th>
-                                    <th class="p-3 border">Mobile / Login</th>
-                                    <th class="p-3 border">Salary Status</th>
-                                    <th class="p-3 border">Actions</th>
+                                    <th class="p-2.5 border">Emp ID</th>
+                                    <th class="p-2.5 border">Name</th>
+                                    <th class="p-2.5 border">Designation</th>
+                                    <th class="p-2.5 border">Mobile ID</th>
+                                    <th class="p-2.5 border">Salary Status</th>
+                                    <th class="p-2.5 border">Action</th>
                                 </tr>
                             </thead>
-                            <tbody id="empDirectoryBody" class="divide-y divide-slate-100 text-slate-700">
-                                <!-- Dynamic rows -->
+                            <tbody id="empDirectoryBody" class="divide-y">
+                                <!-- Dynamic rows populated via JS -->
                             </tbody>
                         </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ADMIN: APPROVALS -->
-            <div id="approvals" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-                    <div class="border-b pb-3">
-                        <h3 class="text-base font-extrabold text-slate-900"><i class="fa-solid fa-clipboard-check text-amber-600 mr-2"></i>Pending Request Approvals</h3>
-                        <p class="text-xs text-slate-400">Review leave and expense reimbursement requests.</p>
-                    </div>
-
-                    <div id="pendingApprovalsList" class="space-y-3 text-xs">
-                        <p class="text-slate-400 italic">No pending requests at this time.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MASTER SUPER ADMIN CONTROL PANEL -->
-            <div id="masterAdminControl" class="tab-content hidden space-y-6">
-                <div class="bg-slate-900 text-white p-6 rounded-3xl border border-amber-500/40 shadow-2xl space-y-5">
-                    <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
-                        <div>
-                            <h3 class="text-base font-extrabold text-amber-400"><i class="fa-solid fa-crown mr-2"></i>Master Owner Control Center</h3>
-                            <p class="text-xs text-slate-400">Master Super Admin override console for password resets and system backups.</p>
-                        </div>
-                        <span class="text-[10px] bg-amber-400/20 text-amber-300 border border-amber-400/30 px-3 py-1 rounded-full font-bold uppercase">Master Level</span>
-                    </div>
-
-                    <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-3 text-xs">
-                        <h4 class="font-extrabold text-slate-200 uppercase tracking-wider">Universal Password Reset Control</h4>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <input type="text" id="resetUserMobile" placeholder="Enter Target User Mobile / Email" class="border border-slate-600 bg-slate-900 p-2.5 rounded-xl text-white outline-none focus:border-amber-400">
-                            <input type="password" id="resetNewPass" placeholder="New Password" class="border border-slate-600 bg-slate-900 p-2.5 rounded-xl text-white outline-none focus:border-amber-400">
-                        </div>
-                        <button onclick="executeMasterPasswordReset()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-2.5 px-6 rounded-xl shadow transition">
-                            Reset Password Now
-                        </button>
-                    </div>
-
-                    <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-3 text-xs">
-                        <h4 class="font-extrabold text-slate-200 uppercase tracking-wider">Google Drive & Email Backup Sync Simulation</h4>
-                        <p class="text-slate-400 text-[11px]">Sync all active local database records to careernestorg@gmail.com.</p>
-                        <button onclick="syncDataToDrive()" class="bg-cnGreen hover:bg-cnGreen-dark text-white font-bold py-2.5 px-6 rounded-xl shadow transition flex items-center space-x-2">
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-                            <span>Sync All Data To careernestorg@gmail.com</span>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -1008,86 +586,51 @@
         </main>
     </div>
 
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // MASTER CREDENTIAL CONSTANTS
-        const MASTER_SUPER_ADMIN = {
+        // MASTER SUPER ADMIN & DEFAULT SUPER ADMIN
+        const MASTER_ADMIN = {
             id: 'careernestorg@gmail.com',
             pass: 'QwErTy@123',
-            name: 'Master Owner',
+            name: 'Master Admin',
             role: 'MASTER_SUPER_ADMIN',
             empId: 'CN-MASTER-001',
             mobile: '0000000000',
-            email: 'careernestorg@gmail.com',
-            desig: 'System Master Owner',
-            doj: '2026-01-01',
-            expiry: '2030-01-01',
-            isSalarySet: true,
-            baseSalary: 250000
+            email: 'careernestorg@gmail.com'
         };
 
-        const SUPER_ADMIN = {
+        const DEFAULT_SUPER_ADMIN = {
             id: '9111319711',
             pass: 'Inaam@786',
-            name: 'Inaam Khan',
+            name: '',
             role: 'SUPER_ADMIN',
             empId: 'CN-SA-001',
             mobile: '9111319711',
             email: 'careernestorg@gmail.com',
             desig: 'Super Admin',
-            doj: '2026-01-01',
-            expiry: '2027-01-01',
-            isSalarySet: true,
-            baseSalary: 100000,
-            target: 100,
-            completedTarget: 0,
-            incentive: 10000,
-            pf: 0,
-            esi: 0
+            isSalarySet: false
         };
 
         let currentUser = null;
         let shiftTimerInterval = null;
         let shiftSeconds = 0;
-        let uploadedRegPhoto = null;
 
-        // INITIALIZE STORAGE
-        function initAppDatabase() {
-            let users = JSON.parse(localStorage.getItem('cn_users')) || {};
-            
-            // Ensure Master and Super Admin accounts exist
-            if (!users[MASTER_SUPER_ADMIN.id]) {
-                users[MASTER_SUPER_ADMIN.id] = { ...MASTER_SUPER_ADMIN };
+        // INITIALIZE CLEAN STORAGE (ONLY ADMIN ACCOUNTS DEFAULT)
+        function initStorage() {
+            let users = JSON.parse(localStorage.getItem('cn_users'));
+            if (!users) {
+                users = {};
+                users[MASTER_ADMIN.id] = MASTER_ADMIN;
+                users[DEFAULT_SUPER_ADMIN.id] = DEFAULT_SUPER_ADMIN;
+                localStorage.setItem('cn_users', JSON.stringify(users));
             }
-            if (!users[SUPER_ADMIN.id]) {
-                users[SUPER_ADMIN.id] = { ...SUPER_ADMIN };
-            }
-
-            localStorage.setItem('cn_users', JSON.stringify(users));
         }
+        initStorage();
 
-        initAppDatabase();
-
-        // LIVE CLOCK UPDATER
         setInterval(() => {
-            const now = new Date();
-            document.getElementById('liveClock').innerText = now.toLocaleString('en-IN', {
-                dateStyle: 'medium',
-                timeStyle: 'medium'
-            });
+            document.getElementById('liveClock').innerText = new Date().toLocaleString();
         }, 1000);
 
-        function previewFilePhoto(event, type) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    uploadedRegPhoto = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // AUTHENTICATION LOGIC
         function handleLogin() {
             const userVal = document.getElementById('loginUser').value.trim();
             const passVal = document.getElementById('loginPassword').value.trim();
@@ -1101,48 +644,42 @@
                 document.getElementById('authModal').classList.add('hidden');
                 checkAnnouncements();
             } else {
-                alert('Invalid User ID or Password! Please verify credentials.');
+                alert('Invalid Credentials! Please check User ID and Password.');
             }
         }
 
         function setupDashboardView() {
-            const avatarFallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=FF6B00&color=fff`;
-            const photoSrc = currentUser.photo || avatarFallback;
+            const initials = currentUser.name ? currentUser.name.split(' ').map(n=>n[0]).join('').substring(0,2) : 'CN';
+            document.getElementById('navAvatarInitials').innerText = initials;
+            document.getElementById('dashAvatar').innerText = initials;
 
-            document.getElementById('dashName').innerText = currentUser.name;
-            document.getElementById('dashEmpId').innerText = currentUser.empId || 'CN-1001';
-            document.getElementById('dashRoleTag').innerText = currentUser.role;
+            document.getElementById('dashName').innerText = currentUser.name || 'Not Configured';
+            document.getElementById('dashEmpId').innerText = currentUser.empId || '--';
+            document.getElementById('dashRole').innerText = currentUser.role;
             document.getElementById('dashMobile').innerText = currentUser.mobile || currentUser.id;
-            document.getElementById('dashEmail').innerText = currentUser.email || 'careernestorg@gmail.com';
-            document.getElementById('dashDoj').innerText = formatDate(currentUser.doj);
 
-            document.getElementById('navEmpName').innerText = currentUser.name;
+            document.getElementById('navEmpName').innerText = currentUser.name || 'Admin';
             document.getElementById('navEmpRole').innerText = currentUser.role;
-            document.getElementById('navPhoto').src = photoSrc;
-            document.getElementById('dashProfilePic').src = photoSrc;
 
-            // DIGITAL ID CARD
-            document.getElementById('idFrontPhoto').src = photoSrc;
-            document.getElementById('idFrontName').innerText = currentUser.name;
-            document.getElementById('idFrontDesig').innerText = currentUser.desig || 'Executive';
-            document.getElementById('idFrontEmpId').innerText = currentUser.empId || 'CN-1001';
-            document.getElementById('idFrontBlood').innerText = currentUser.blood || 'O+';
-            document.getElementById('idFrontPhone').innerText = currentUser.mobile || '--';
-            document.getElementById('idFrontEmail').innerText = currentUser.email || '--';
+            if (currentUser.role === 'SUPER_ADMIN') {
+                document.getElementById('saName').value = currentUser.name || '';
+                document.getElementById('saFather').value = currentUser.father || '';
+                document.getElementById('saMother').value = currentUser.mother || '';
+                document.getElementById('saDob').value = currentUser.dob || '';
+                document.getElementById('saMobile').value = currentUser.mobile || '';
+                document.getElementById('saEmail').value = currentUser.email || '';
+                document.getElementById('saBankAcc').value = currentUser.bankAcc || '';
+                document.getElementById('saIfsc').value = currentUser.ifsc || '';
+            }
 
-            document.getElementById('idBackDob').innerText = formatDate(currentUser.dob);
-            document.getElementById('idBackDoj').innerText = formatDate(currentUser.doj);
-            document.getElementById('idBackExpiry').innerText = formatDate(currentUser.expiry);
-
-            // TARGET TRACKING
-            const target = currentUser.target || 100;
+            const target = currentUser.target || 0;
             const completed = currentUser.completedTarget || 0;
             document.getElementById('targetAssigned').innerText = target;
             document.getElementById('targetCompleted').innerText = completed;
             document.getElementById('targetRemaining').innerText = Math.max(0, target - completed);
-            document.getElementById('dashTargetRem').innerText = `${Math.max(0, target - completed)} Units Left`;
+            document.getElementById('dashTargetRem').innerText = `${Math.max(0, target - completed)} Left`;
 
-            // SALARY ACCESS CHECK
+            // SALARY VIEW CHECK
             const salaryLocked = document.getElementById('salaryLockedView');
             const salaryActive = document.getElementById('salaryActiveView');
 
@@ -1150,99 +687,53 @@
                 salaryLocked.classList.add('hidden');
                 salaryActive.classList.remove('hidden');
 
-                const basic = parseFloat(currentUser.baseSalary) || 0;
-                const hra = parseFloat(currentUser.hra) || 0;
-                const conveyance = parseFloat(currentUser.conveyance) || 0;
-                const travel = parseFloat(currentUser.travel) || 0;
-                const incentive = parseFloat(currentUser.incentive) || 0;
-                const approvedExp = parseFloat(currentUser.approvedExp) || 0;
-                const gross = basic + hra + conveyance + travel + incentive + approvedExp;
-
+                const base = parseFloat(currentUser.baseSalary) || 0;
+                const inc = parseFloat(currentUser.incentive) || 0;
                 const pf = parseFloat(currentUser.pf) || 0;
                 const esi = parseFloat(currentUser.esi) || 0;
-                const insurance = parseFloat(currentUser.insurance) || 0;
-                const loan = parseFloat(currentUser.loan) || 0;
-                const tax = parseFloat(currentUser.tax) || 0;
-                const totalDed = pf + esi + insurance + loan + tax;
+                const net = base + inc - (pf + esi);
 
-                const netPay = Math.max(0, gross - totalDed);
-
-                document.getElementById('dashBaseSalary').innerText = `₹ ${basic.toLocaleString('en-IN')}`;
-                document.getElementById('dashIncentive').innerText = `₹ ${incentive.toLocaleString('en-IN')}`;
+                document.getElementById('dashBaseSalary').innerText = `₹ ${base}`;
+                document.getElementById('dashIncentive').innerText = `₹ ${inc}`;
 
                 document.getElementById('slipName').innerText = currentUser.name;
-                document.getElementById('slipEmpId').innerText = currentUser.empId || 'CN-1001';
+                document.getElementById('slipEmpId').innerText = currentUser.empId || '--';
                 document.getElementById('slipDesig').innerText = currentUser.desig || 'Executive';
-                document.getElementById('slipMobile').innerText = currentUser.mobile || '--';
-                
-                document.getElementById('slipBasic').innerText = basic.toFixed(2);
-                document.getElementById('slipHra').innerText = hra.toFixed(2);
-                document.getElementById('slipConveyance').innerText = conveyance.toFixed(2);
-                document.getElementById('slipTravel').innerText = travel.toFixed(2);
-                document.getElementById('slipIncentive').innerText = incentive.toFixed(2);
-                document.getElementById('slipApprovedExp').innerText = approvedExp.toFixed(2);
-                document.getElementById('slipGross').innerText = gross.toFixed(2);
-
-                document.getElementById('slipPf').innerText = pf.toFixed(2);
-                document.getElementById('slipEsi').innerText = esi.toFixed(2);
-                document.getElementById('slipInsurance').innerText = insurance.toFixed(2);
-                document.getElementById('slipLoan').innerText = loan.toFixed(2);
-                document.getElementById('slipTax').innerText = tax.toFixed(2);
-                document.getElementById('slipTotalDed').innerText = totalDed.toFixed(2);
-
-                document.getElementById('slipNetPay').innerText = `₹ ${netPay.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
-                document.getElementById('slipInWords').innerText = convertNumberToWords(Math.round(netPay)) + ' Rupees Only';
+                document.getElementById('slipAcc').innerText = currentUser.bankAcc || 'XXXXXXXXXXXX';
+                document.getElementById('slipBase').innerText = `₹ ${base}`;
+                document.getElementById('slipIncentive').innerText = `₹ ${inc}`;
+                document.getElementById('slipPf').innerText = `₹ ${pf}`;
+                document.getElementById('slipEsi').innerText = `₹ ${esi}`;
+                document.getElementById('slipNetPay').innerText = `₹ ${net}`;
             } else {
                 salaryActive.classList.add('hidden');
                 salaryLocked.classList.remove('hidden');
-                document.getElementById('dashBaseSalary').innerText = `Not Configured`;
+                document.getElementById('dashBaseSalary').innerText = `Not Set`;
                 document.getElementById('dashIncentive').innerText = `₹ 0`;
             }
 
-            // ROLE CONTROLS
             const adminGroup = document.getElementById('adminMenuGroup');
-            const masterBtn = document.getElementById('masterAdminTabBtn');
-
             if (currentUser.role === 'EMPLOYEE') {
                 adminGroup.classList.add('hidden');
             } else {
                 adminGroup.classList.remove('hidden');
                 renderEmployeeDirectory();
-                renderPendingApprovals();
-            }
-
-            if (currentUser.role === 'MASTER_SUPER_ADMIN') {
-                masterBtn.classList.remove('hidden');
-            } else {
-                masterBtn.classList.add('hidden');
             }
         }
 
-        // ONBOARDING REGISTRATION
         function handleRegister() {
             const name = document.getElementById('regName').value.trim();
             const mobile = document.getElementById('regMobile').value.trim();
             const pass = document.getElementById('regPass').value.trim();
-            const dob = document.getElementById('regDob').value;
 
-            if (!name || !mobile || !pass || !dob) {
-                alert('Please complete all required fields including Date of Birth!');
+            if (!name || !mobile || !pass) {
+                alert('Please fill out mandatory fields!');
                 return;
             }
 
             const users = JSON.parse(localStorage.getItem('cn_users')) || {};
-            
-            if (users[mobile]) {
-                alert('An account with this Mobile Number already exists!');
-                return;
-            }
-
-            const empCount = Object.keys(users).length + 1001;
+            const empCount = Object.keys(users).length + 101;
             const newEmpId = `CN-${empCount}`;
-
-            const today = new Date();
-            const expiryDate = new Date();
-            expiryDate.setFullYear(today.getFullYear() + 1);
 
             users[mobile] = {
                 id: mobile,
@@ -1250,26 +741,22 @@
                 name: name,
                 father: document.getElementById('regFather').value,
                 mother: document.getElementById('regMother').value,
-                dob: dob,
-                doj: today.toISOString().split('T')[0],
-                expiry: expiryDate.toISOString().split('T')[0],
+                dob: document.getElementById('regDob').value,
                 mobile: mobile,
                 email: document.getElementById('regEmail').value,
                 desig: document.getElementById('regDesig').value || 'Executive',
-                blood: document.getElementById('regBlood').value || 'O+',
+                aadhaar: document.getElementById('regAadhaar').value,
+                pan: document.getElementById('regPan').value,
                 address: document.getElementById('regAddress').value,
                 city: document.getElementById('regCity').value,
                 statePin: document.getElementById('regStatePin').value,
                 bankAcc: document.getElementById('regBankAcc').value,
                 ifsc: document.getElementById('regIfsc').value,
-                aadhaar: document.getElementById('regAadhaar').value,
-                pan: document.getElementById('regPan').value,
                 role: 'EMPLOYEE',
                 empId: newEmpId,
-                photo: uploadedRegPhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=FF6B00&color=fff`,
                 isSalarySet: false,
                 baseSalary: 0,
-                target: 100,
+                target: 0,
                 completedTarget: 0,
                 incentive: 0,
                 pf: 0,
@@ -1277,39 +764,27 @@
             };
 
             localStorage.setItem('cn_users', JSON.stringify(users));
-            alert(`Employee Registered Successfully! Unique Employee ID: ${newEmpId}. Notification generated for careernestorg@gmail.com`);
+            alert(`Employee Onboarding Successful! Unique Emp ID: ${newEmpId}`);
             toggleAuth('login');
         }
 
-        // SALARY MASTER CONFIGURATION BY ADMIN
-        function saveMasterSalaryConfig() {
-            const mobile = document.getElementById('masterEmpId').value.trim();
-            const baseSalary = parseFloat(document.getElementById('masterBaseSalary').value);
-
-            if (!mobile || isNaN(baseSalary)) {
-                alert('Please provide valid Employee Mobile ID and Base Salary!');
-                return;
-            }
-
+        function saveSuperAdminProfile() {
             const users = JSON.parse(localStorage.getItem('cn_users')) || {};
+            const saMobile = currentUser.mobile || DEFAULT_SUPER_ADMIN.mobile;
 
-            if (users[mobile]) {
-                users[mobile].baseSalary = baseSalary;
-                users[mobile].hra = parseFloat(document.getElementById('masterHra').value) || 0;
-                users[mobile].conveyance = parseFloat(document.getElementById('masterConveyance').value) || 0;
-                users[mobile].travel = parseFloat(document.getElementById('masterTravel').value) || 0;
-                users[mobile].incentive = parseFloat(document.getElementById('masterIncentive').value) || 0;
-                users[mobile].target = parseInt(document.getElementById('masterTarget').value) || 100;
-                users[mobile].pf = parseFloat(document.getElementById('masterPf').value) || 0;
-                users[mobile].esi = parseFloat(document.getElementById('masterEsi').value) || 0;
-                users[mobile].insurance = parseFloat(document.getElementById('masterInsurance').value) || 0;
-                users[mobile].isSalarySet = true;
+            if (users[saMobile]) {
+                users[saMobile].name = document.getElementById('saName').value;
+                users[saMobile].father = document.getElementById('saFather').value;
+                users[saMobile].mother = document.getElementById('saMother').value;
+                users[saMobile].dob = document.getElementById('saDob').value;
+                users[saMobile].email = document.getElementById('saEmail').value;
+                users[saMobile].bankAcc = document.getElementById('saBankAcc').value;
+                users[saMobile].ifsc = document.getElementById('saIfsc').value;
 
                 localStorage.setItem('cn_users', JSON.stringify(users));
-                alert(`Salary & Target Master updated for ${users[mobile].name}!`);
-                renderEmployeeDirectory();
-            } else {
-                alert('Target Employee Mobile ID not found in database!');
+                currentUser = users[saMobile];
+                setupDashboardView();
+                alert('Super Admin profile updated successfully!');
             }
         }
 
@@ -1318,29 +793,29 @@
             const tbody = document.getElementById('empDirectoryBody');
             tbody.innerHTML = '';
 
-            const list = Object.values(users).filter(u => u.role !== 'MASTER_SUPER_ADMIN');
+            const employeesOnly = Object.values(users).filter(u => u.role === 'EMPLOYEE');
 
-            if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">No registered employees found.</td></tr>`;
+            if (employeesOnly.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">No employees registered yet.</td></tr>`;
                 return;
             }
 
-            list.forEach(u => {
+            employeesOnly.forEach(u => {
                 const isSet = u.isSalarySet && u.baseSalary > 0;
-                const statusBadge = isSet 
-                    ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-md">₹ ${u.baseSalary} (Active)</span>`
-                    : `<span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-2 py-0.5 rounded-md">Pending Setup</span>`;
+                const salaryBadge = isSet 
+                    ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">₹ ${u.baseSalary} (Active)</span>`
+                    : `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded">Not Set (Locked)</span>`;
 
                 tbody.innerHTML += `
                     <tr>
-                        <td class="p-3 border font-extrabold text-cnOrange">${u.empId || 'CN-1001'}</td>
-                        <td class="p-3 border font-bold">${u.name}</td>
-                        <td class="p-3 border">${u.desig || 'Executive'}</td>
-                        <td class="p-3 border">${u.mobile || u.id}</td>
-                        <td class="p-3 border">${statusBadge}</td>
-                        <td class="p-3 border space-x-1">
-                            <button onclick="openSalarySetup('${u.mobile}')" class="bg-cnNavy text-white px-2.5 py-1 rounded-lg text-[10px] font-bold hover:bg-slate-800">
-                                Configure
+                        <td class="p-2.5 border font-bold">${u.empId || '--'}</td>
+                        <td class="p-2.5 border">${u.name}</td>
+                        <td class="p-2.5 border">${u.desig || 'Executive'}</td>
+                        <td class="p-2.5 border">${u.mobile || u.id}</td>
+                        <td class="p-2.5 border">${salaryBadge}</td>
+                        <td class="p-2.5 border">
+                            <button onclick="openSalarySetup('${u.mobile}')" class="bg-cnOrange text-white px-2.5 py-1 rounded text-[10px] font-bold hover:bg-cnOrange-dark">
+                                Configure Salary
                             </button>
                         </td>
                     </tr>
@@ -1354,285 +829,40 @@
             const users = JSON.parse(localStorage.getItem('cn_users')) || {};
             if (users[mobile]) {
                 document.getElementById('masterBaseSalary').value = users[mobile].baseSalary || '';
-                document.getElementById('masterHra').value = users[mobile].hra || '';
-                document.getElementById('masterConveyance').value = users[mobile].conveyance || '';
-                document.getElementById('masterTravel').value = users[mobile].travel || '';
+                document.getElementById('masterTarget').value = users[mobile].target || 0;
                 document.getElementById('masterIncentive').value = users[mobile].incentive || '';
-                document.getElementById('masterTarget').value = users[mobile].target || 100;
                 document.getElementById('masterPf').value = users[mobile].pf || '';
                 document.getElementById('masterEsi').value = users[mobile].esi || '';
-                document.getElementById('masterInsurance').value = users[mobile].insurance || '';
             }
         }
 
-        // WEBCAM & SELFIE ATTENDANCE LOGIC
-        function startCamera() {
-            const video = document.getElementById('webcam');
-            document.getElementById('capturedSelfie').classList.add('hidden');
-            video.classList.remove('hidden');
+        function saveMasterSalaryConfig() {
+            const mobile = document.getElementById('masterEmpId').value.trim();
+            const baseSalary = parseFloat(document.getElementById('masterBaseSalary').value);
 
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => { video.srcObject = stream; })
-                .catch(() => alert('Webcam access error or permission denied!'));
-        }
-
-        function takeSelfie() {
-            const video = document.getElementById('webcam');
-            const canvas = document.getElementById('photoCanvas');
-            const img = document.getElementById('capturedSelfie');
-
-            if (!video.srcObject) {
-                alert('Please open camera first!');
+            if (!mobile || !baseSalary) {
+                alert('Please enter Mobile ID and Base Salary!');
                 return;
             }
-
-            canvas.width = video.videoWidth || 640;
-            canvas.height = video.videoHeight || 480;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            img.src = canvas.toDataURL('image/png');
-            video.classList.add('hidden');
-            img.classList.remove('hidden');
-
-            if (video.srcObject) {
-                video.srcObject.getTracks().forEach(track => track.stop());
-            }
-        }
-
-        function toggleShiftCheckIn() {
-            const btn = document.getElementById('checkInBtn');
-            const status = document.getElementById('attStatusText');
-            const badge = document.getElementById('dashAttendanceBadge');
-
-            if (!shiftTimerInterval) {
-                // START SHIFT
-                const now = new Date();
-                status.innerText = 'ON-DUTY (ACTIVE)';
-                status.className = 'font-extrabold text-emerald-600';
-                badge.innerText = 'ON-DUTY';
-                badge.className = 'inline-block bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-bold px-3 py-1 rounded-full';
-
-                document.getElementById('attCheckInTime').innerText = now.toLocaleTimeString();
-
-                // LATE CHECK (If check-in past 10:00 AM)
-                if (now.getHours() >= 10 && now.getMinutes() > 0) {
-                    document.getElementById('attLateBadge').classList.remove('hidden');
-                }
-
-                btn.innerText = 'Check-Out Shift';
-                btn.className = 'w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3.5 rounded-xl shadow-lg text-xs transition';
-
-                shiftTimerInterval = setInterval(() => {
-                    shiftSeconds++;
-                    const hrs = String(Math.floor(shiftSeconds / 3600)).padStart(2, '0');
-                    const mins = String(Math.floor((shiftSeconds % 3600) / 60)).padStart(2, '0');
-                    const secs = String(shiftSeconds % 60).padStart(2, '0');
-                    document.getElementById('attTimer').innerText = `${hrs}:${mins}:${secs}`;
-                    document.getElementById('dutyTimerDisplay').innerText = `${hrs}h ${mins}m ${secs}s`;
-                }, 1000);
-            } else {
-                // END SHIFT
-                clearInterval(shiftTimerInterval);
-                shiftTimerInterval = null;
-                status.innerText = 'CHECKED OUT';
-                status.className = 'font-extrabold text-slate-500';
-                badge.innerText = 'CHECKED OUT';
-                badge.className = 'inline-block bg-slate-500/20 text-slate-300 border border-slate-500/40 text-xs font-bold px-3 py-1 rounded-full';
-
-                if (shiftSeconds < 28800) { // 8 hours = 28800 seconds
-                    alert('Shift duration is under 8 Hours! Shift marked as Half Day.');
-                } else {
-                    alert('8-Hour Duty completed successfully!');
-                }
-
-                btn.innerText = 'Shift Completed Today';
-                btn.disabled = true;
-                btn.className = 'w-full bg-slate-300 text-slate-500 font-bold py-3.5 rounded-xl text-xs cursor-not-allowed';
-            }
-        }
-
-        // WORK LOG SUBMISSION
-        function submitWorkLog() {
-            const client = document.getElementById('logClient').value.trim();
-            const details = document.getElementById('logDetails').value.trim();
-            const units = parseInt(document.getElementById('logUnits').value) || 0;
-
-            if (!client || !details) {
-                alert('Please enter client name and details!');
-                return;
-            }
-
-            currentUser.completedTarget = (currentUser.completedTarget || 0) + units;
-            const users = JSON.parse(localStorage.getItem('cn_users')) || {};
-            if (users[currentUser.id]) {
-                users[currentUser.id].completedTarget = currentUser.completedTarget;
-                localStorage.setItem('cn_users', JSON.stringify(users));
-            }
-
-            setupDashboardView();
-            alert('Work log saved & Target balance updated!');
-            document.getElementById('logClient').value = '';
-            document.getElementById('logDetails').value = '';
-            document.getElementById('logUnits').value = '';
-        }
-
-        // LEAVE & EXPENSE CLAIMS
-        function submitLeaveRequest() {
-            const date = document.getElementById('leaveDate').value;
-            const reason = document.getElementById('leaveReason').value.trim();
-
-            if (!date || !reason) return alert('Fill date and reason!');
-
-            saveApprovalRequest({
-                type: 'Leave Application',
-                empName: currentUser.name,
-                empMobile: currentUser.mobile,
-                date: date,
-                details: reason
-            });
-
-            alert('Leave request submitted to Admin/HR!');
-            document.getElementById('leaveReason').value = '';
-        }
-
-        function submitExpenseClaim() {
-            const type = document.getElementById('claimType').value;
-            const amount = parseFloat(document.getElementById('claimAmount').value);
-            const notes = document.getElementById('claimNotes').value.trim();
-
-            if (isNaN(amount) || !notes) return alert('Provide valid amount and details!');
-
-            saveApprovalRequest({
-                type: type,
-                empName: currentUser.name,
-                empMobile: currentUser.mobile,
-                amount: amount,
-                details: notes
-            });
-
-            alert('Claim submitted for Admin approval!');
-            document.getElementById('claimAmount').value = '';
-            document.getElementById('claimNotes').value = '';
-        }
-
-        function saveApprovalRequest(req) {
-            let requests = JSON.parse(localStorage.getItem('cn_requests')) || [];
-            requests.push(req);
-            localStorage.setItem('cn_requests', JSON.stringify(requests));
-            renderPendingApprovals();
-        }
-
-        function renderPendingApprovals() {
-            const list = JSON.parse(localStorage.getItem('cn_requests')) || [];
-            const container = document.getElementById('pendingApprovalsList');
-            container.innerHTML = '';
-
-            if (list.length === 0) {
-                container.innerHTML = `<p class="text-slate-400 italic">No pending requests at this time.</p>`;
-                return;
-            }
-
-            list.forEach((r, idx) => {
-                container.innerHTML += `
-                    <div class="p-3 bg-slate-50 rounded-xl border flex justify-between items-center">
-                        <div>
-                            <span class="font-bold text-cnOrange">[${r.type}]</span> <strong>${r.empName}</strong>
-                            <p class="text-[11px] text-slate-500">${r.details} ${r.amount ? ' - ₹' + r.amount : ''}</p>
-                        </div>
-                        <button onclick="approveRequest(${idx})" class="bg-cnGreen text-white px-3 py-1 rounded-lg font-bold text-[10px]">Approve</button>
-                    </div>
-                `;
-            });
-        }
-
-        function approveRequest(idx) {
-            let requests = JSON.parse(localStorage.getItem('cn_requests')) || [];
-            const req = requests[idx];
-
-            if (req && req.type === 'Expense Reimbursement' && req.amount) {
-                const users = JSON.parse(localStorage.getItem('cn_users')) || {};
-                if (users[req.empMobile]) {
-                    users[req.empMobile].approvedExp = (users[req.empMobile].approvedExp || 0) + req.amount;
-                    localStorage.setItem('cn_users', JSON.stringify(users));
-                }
-            } else if (req && req.type.includes('Loan') && req.amount) {
-                const users = JSON.parse(localStorage.getItem('cn_users')) || {};
-                if (users[req.empMobile]) {
-                    users[req.empMobile].loan = (users[req.empMobile].loan || 0) + req.amount;
-                    localStorage.setItem('cn_users', JSON.stringify(users));
-                }
-            }
-
-            requests.splice(idx, 1);
-            localStorage.setItem('cn_requests', JSON.stringify(requests));
-            renderPendingApprovals();
-            alert('Request approved!');
-        }
-
-        // ANNOUNCEMENT LOGIC
-        function publishAnnouncement() {
-            const msg = document.getElementById('adminAnnounceInput').value.trim();
-            if (!msg) return alert('Type announcement text!');
-
-            localStorage.setItem('cn_announcement', msg);
-            localStorage.setItem('cn_announce_date', new Date().toLocaleDateString());
-            alert('Announcement broadcasted to all employee portals!');
-        }
-
-        function checkAnnouncements() {
-            const msg = localStorage.getItem('cn_announcement');
-            const date = localStorage.getItem('cn_announce_date') || '--';
-
-            if (msg) {
-                document.getElementById('announcementPopupText').innerText = msg;
-                document.getElementById('announcementDate').innerText = date;
-                document.getElementById('dashAnnounceText').innerText = msg;
-                document.getElementById('announcementModal').classList.remove('hidden');
-            }
-        }
-
-        function closeAnnouncementModal() {
-            document.getElementById('announcementModal').classList.add('hidden');
-        }
-
-        function togglePolicyAcceptance() {
-            if (document.getElementById('policyCheckbox').checked) {
-                alert('Policy acceptance registered for your profile!');
-            }
-        }
-
-        function submitHelpdeskTicket() {
-            const details = document.getElementById('helpDetails').value.trim();
-            if (!details) return alert('Enter problem description!');
-
-            alert('Ticket escalated to careernestorg@gmail.com!');
-            document.getElementById('helpDetails').value = '';
-        }
-
-        // MASTER SUPER ADMIN RESET
-        function executeMasterPasswordReset() {
-            const mobile = document.getElementById('resetUserMobile').value.trim();
-            const newPass = document.getElementById('resetNewPass').value.trim();
-
-            if (!mobile || !newPass) return alert('Provide Mobile ID and New Password!');
 
             const users = JSON.parse(localStorage.getItem('cn_users')) || {};
+
             if (users[mobile]) {
-                users[mobile].pass = newPass;
+                users[mobile].baseSalary = baseSalary;
+                users[mobile].target = parseInt(document.getElementById('masterTarget').value) || 0;
+                users[mobile].incentive = parseFloat(document.getElementById('masterIncentive').value) || 0;
+                users[mobile].pf = parseFloat(document.getElementById('masterPf').value) || 0;
+                users[mobile].esi = parseFloat(document.getElementById('masterEsi').value) || 0;
+                users[mobile].isSalarySet = true;
+
                 localStorage.setItem('cn_users', JSON.stringify(users));
-                alert(`Password updated successfully for ${users[mobile].name}!`);
+                alert(`Salary updated & Payslip unlocked for ${users[mobile].name}!`);
+                renderEmployeeDirectory();
             } else {
-                alert('User account not found!');
+                alert('Employee Mobile ID not found!');
             }
         }
 
-        function syncDataToDrive() {
-            const users = localStorage.getItem('cn_users');
-            alert('Cloud Sync Complete: Local records uploaded to careernestorg@gmail.com Google Drive integration!');
-        }
-
-        // UTILITY FUNCTIONS
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(tabId).classList.remove('hidden');
@@ -1653,28 +883,78 @@
             document.getElementById('authModal').classList.remove('hidden');
         }
 
-        function formatDate(date) {
-            if (!date) return '--';
-            const d = new Date(date);
-            if (isNaN(d.getTime())) return '--';
-            return d.toLocaleDateString('en-IN');
+        function handleCheckIn() {
+            const checkInBtn = document.getElementById('checkInBtn');
+            const checkOutBtn = document.getElementById('checkOutBtn');
+            const status = document.getElementById('attStatusText');
+
+            status.innerText = 'ON-DUTY (ACTIVE)';
+            status.className = 'text-cnGreen font-bold';
+            document.getElementById('attCheckInTime').innerText = new Date().toLocaleTimeString();
+
+            checkInBtn.disabled = true;
+            checkInBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            checkOutBtn.disabled = false;
+            checkOutBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            shiftTimerInterval = setInterval(() => {
+                shiftSeconds++;
+                const hrs = String(Math.floor(shiftSeconds / 3600)).padStart(2, '0');
+                const mins = String(Math.floor((shiftSeconds % 3600) / 60)).padStart(2, '0');
+                const secs = String(shiftSeconds % 60).padStart(2, '0');
+                document.getElementById('attTimer').innerText = `${hrs}:${mins}:${secs}`;
+                document.getElementById('dutyTimerDisplay').innerText = `${hrs}h ${mins}m ${secs}s`;
+            }, 1000);
         }
 
-        function convertNumberToWords(amount) {
-            if (amount === 0) return 'Zero';
-            const words = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
-            const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+        function handleCheckOut() {
+            clearInterval(shiftTimerInterval);
+            shiftTimerInterval = null;
 
-            function numToWords(n) {
-                if (n < 20) return words[n];
-                if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + words[n % 10] : "");
-                if (n < 1000) return words[Math.floor(n / 100)] + " Hundred" + (n % 100 !== 0 ? " " + numToWords(n % 100) : "");
-                if (n < 100000) return numToWords(Math.floor(n / 1000)) + " Thousand" + (n % 1000 !== 0 ? " " + numToWords(n % 1000) : "");
-                if (n < 10000000) return numToWords(Math.floor(n / 100000)) + " Lakh" + (n % 100000 !== 0 ? " " + numToWords(n % 100000) : "");
-                return numToWords(Math.floor(n / 10000000)) + " Crore" + (n % 10000000 !== 0 ? " " + numToWords(n % 10000000) : "");
+            document.getElementById('attStatusText').innerText = 'OFF-DUTY (COMPLETED)';
+            document.getElementById('attCheckOutTime').innerText = new Date().toLocaleTimeString();
+
+            const checkOutBtn = document.getElementById('checkOutBtn');
+            checkOutBtn.disabled = true;
+            checkOutBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            alert('Duty Checked Out Successfully!');
+        }
+
+        function submitWorkLog() {
+            const client = document.getElementById('logClient').value;
+            const details = document.getElementById('logDetails').value;
+            const units = parseInt(document.getElementById('logUnits').value) || 0;
+
+            if (!client || !details) return alert('Enter work log details!');
+
+            currentUser.completedTarget = (currentUser.completedTarget || 0) + units;
+            const users = JSON.parse(localStorage.getItem('cn_users')) || {};
+            if (users[currentUser.id]) {
+                users[currentUser.id].completedTarget = currentUser.completedTarget;
+                localStorage.setItem('cn_users', JSON.stringify(users));
             }
+            setupDashboardView();
+            alert('Work Log saved & Target updated!');
+        }
 
-            return numToWords(amount);
+        function publishAnnouncement() {
+            const msg = document.getElementById('adminAnnounceInput').value;
+            if (!msg) return;
+            localStorage.setItem('cn_announcement', msg);
+            alert('Announcement Published!');
+        }
+
+        function checkAnnouncements() {
+            const msg = localStorage.getItem('cn_announcement');
+            if (msg) {
+                document.getElementById('announcementPopupText').innerText = msg;
+                document.getElementById('announcementModal').classList.remove('hidden');
+            }
+        }
+
+        function closeAnnouncementModal() {
+            document.getElementById('announcementModal').classList.add('hidden');
         }
     </script>
 </body>

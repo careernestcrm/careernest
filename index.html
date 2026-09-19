@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Career Nest - HRMS & CRM Portal</title>
+    <title>Career Nest - HRMS & CRM Portal (Firestore Integrated)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- FIREBASE SDKs (v9 Compat API) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <script>
         tailwind.config = {
@@ -672,6 +676,21 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
+        // 1. FIREBASE CONFIGURATION
+        const firebaseConfig = {
+            apiKey: "AIzaSyCOqz-8XuCb8MiWX0GYCva5-5GVMt0_MpU",
+  authDomain: "careernest-f0d86.firebaseapp.com",
+  projectId: "careernest-f0d86",
+  storageBucket: "careernest-f0d86.firebasestorage.app",
+  messagingSenderId: "299685180750",
+  appId: "1:299685180750:web:7aa83c497c86843c2b1a1f",
+  measurementId: "G-07DLG375RD"
+        };
+
+        // Firebase Initialize
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
         // MASTER SUPER ADMIN & DEFAULT SUPER ADMIN
         const MASTER_ADMIN = {
             id: 'careernestorg@gmail.com',
@@ -693,7 +712,7 @@
             mobile: '9111319711',
             email: 'careernestorg@gmail.com',
             desig: 'Super Admin',
-            doj: '2026-01-01',
+            doj: '2026-09-01',
             isSalarySet: false
         };
 
@@ -857,6 +876,34 @@
             }
         }
 
+        // 2. FIRESTORE - ADD NEW EMPLOYEE
+        async function handleAdminAddEmployeeFirestore(empData) {
+            try {
+                await db.collection("employees").doc(empData.mobile).set({
+                    empId: empData.empId,
+                    name: empData.name,
+                    father: empData.father,
+                    mother: empData.mother,
+                    dob: empData.dob,
+                    doj: empData.doj,
+                    mobile: empData.mobile,
+                    email: empData.email,
+                    desig: empData.desig,
+                    pan: empData.pan,
+                    address: empData.address,
+                    bankAcc: empData.bankAcc,
+                    ifsc: empData.ifsc,
+                    role: "EMPLOYEE",
+                    isSalarySet: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+
+                console.log("Employee profile successfully created in Firebase Firestore!");
+            } catch (error) {
+                console.error("Firestore Error: ", error);
+            }
+        }
+
         function handleAdminAddEmployee() {
             const name = document.getElementById('newEmpName').value.trim();
             const mobile = document.getElementById('newEmpMobile').value.trim();
@@ -872,7 +919,7 @@
             const empCount = Object.keys(users).length + 101;
             const newEmpId = `CN-${empCount}`;
 
-            users[mobile] = {
+            const empObj = {
                 id: mobile,
                 pass: pass,
                 name: name,
@@ -893,7 +940,12 @@
                 isSalarySet: false
             };
 
+            users[mobile] = empObj;
             localStorage.setItem('cn_users', JSON.stringify(users));
+
+            // Sync with Firestore Cloud Database
+            handleAdminAddEmployeeFirestore(empObj);
+
             alert(`Employee Onboarding Successful! Assigned Emp Code: ${newEmpId}`);
             renderEmployeeDirectory();
             showTab('employeeList');
@@ -980,6 +1032,29 @@
             }
         }
 
+        // 3. FIRESTORE - SAVE MONTHLY SALARY SLIP
+        async function saveMonthlySalaryToFirestore(mobile, monthYear, salaryDetails) {
+            try {
+                await db.collection("employees")
+                        .doc(mobile)
+                        .collection("salary_slips")
+                        .doc(monthYear)
+                        .set({
+                            ...salaryDetails,
+                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+
+                await db.collection("employees").doc(mobile).update({
+                    isSalarySet: true,
+                    latestSalary: salaryDetails
+                });
+
+                console.log(`Month ${monthYear} ki Salary Slip Firestore me save ho gayi hai!`);
+            } catch (error) {
+                console.error("Firestore Error: ", error);
+            }
+        }
+
         function saveMasterSalaryConfig() {
             const mobile = document.getElementById('masterEmpId').value.trim();
             const basic = parseFloat(document.getElementById('masterBasic').value);
@@ -992,30 +1067,58 @@
             const users = JSON.parse(localStorage.getItem('cn_users')) || {};
 
             if (users[mobile]) {
-                users[mobile].basicSalary = basic;
-                users[mobile].hra = parseFloat(document.getElementById('masterHra').value) || 0;
-                users[mobile].conv = parseFloat(document.getElementById('masterConv').value) || 0;
-                users[mobile].petrol = parseFloat(document.getElementById('masterPetrol').value) || 0;
-                users[mobile].otherAllow = parseFloat(document.getElementById('masterOtherAllow').value) || 0;
-                users[mobile].incentive = parseFloat(document.getElementById('masterIncentive').value) || 0;
-                users[mobile].bonus = parseFloat(document.getElementById('masterBonus').value) || 0;
+                const salaryData = {
+                    basicSalary: basic,
+                    hra: parseFloat(document.getElementById('masterHra').value) || 0,
+                    conv: parseFloat(document.getElementById('masterConv').value) || 0,
+                    petrol: parseFloat(document.getElementById('masterPetrol').value) || 0,
+                    otherAllow: parseFloat(document.getElementById('masterOtherAllow').value) || 0,
+                    incentive: parseFloat(document.getElementById('masterIncentive').value) || 0,
+                    bonus: parseFloat(document.getElementById('masterBonus').value) || 0,
+                    pf: parseFloat(document.getElementById('masterPf').value) || 0,
+                    esi: parseFloat(document.getElementById('masterEsi').value) || 0,
+                    insurance: parseFloat(document.getElementById('masterInsurance').value) || 0,
+                    loan: parseFloat(document.getElementById('masterLoan').value) || 0,
+                    pt: parseFloat(document.getElementById('masterPt').value) || 0,
+                    tds: parseFloat(document.getElementById('masterTds').value) || 0,
+                    otherDed: parseFloat(document.getElementById('masterOtherDed').value) || 0,
+                    target: parseInt(document.getElementById('masterTarget').value) || 0,
+                    isSalarySet: true
+                };
 
-                users[mobile].pf = parseFloat(document.getElementById('masterPf').value) || 0;
-                users[mobile].esi = parseFloat(document.getElementById('masterEsi').value) || 0;
-                users[mobile].insurance = parseFloat(document.getElementById('masterInsurance').value) || 0;
-                users[mobile].loan = parseFloat(document.getElementById('masterLoan').value) || 0;
-                users[mobile].pt = parseFloat(document.getElementById('masterPt').value) || 0;
-                users[mobile].tds = parseFloat(document.getElementById('masterTds').value) || 0;
-                users[mobile].otherDed = parseFloat(document.getElementById('masterOtherDed').value) || 0;
-
-                users[mobile].target = parseInt(document.getElementById('masterTarget').value) || 0;
-                users[mobile].isSalarySet = true;
-
+                Object.assign(users[mobile], salaryData);
                 localStorage.setItem('cn_users', JSON.stringify(users));
+
+                // Firestore Sync
+                const currentMonthYear = new Date().toISOString().slice(0, 7); // e.g. '2026-09'
+                saveMonthlySalaryToFirestore(mobile, currentMonthYear, salaryData);
+
                 alert(`Salary Structure & Incentive saved for ${users[mobile].name}!`);
                 renderEmployeeDirectory();
             } else {
                 alert('Employee Mobile ID not found!');
+            }
+        }
+
+        // 4. FIRESTORE - FETCH MONTHLY SALARY SLIP
+        async function fetchMonthlySalarySlip(mobile, monthYear) {
+            try {
+                const docRef = await db.collection("employees")
+                                       .doc(mobile)
+                                       .collection("salary_slips")
+                                       .doc(monthYear)
+                                       .get();
+
+                if (docRef.exists) {
+                    const slipData = docRef.data();
+                    console.log("Monthly Slip Data:", slipData);
+                    return slipData;
+                } else {
+                    alert("Is month ki salary slip abhi tak generate nahi hui hai.");
+                    return null;
+                }
+            } catch (error) {
+                console.error("Error fetching slip: ", error);
             }
         }
 

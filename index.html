@@ -72,7 +72,7 @@
                 </div>
             </div>
 
-            <!-- REGISTRATION FORM -->
+            <!-- REGISTRATION FORM FOR EMPLOYEES -->
             <div id="registerSection" class="hidden space-y-3 max-h-[70vh] overflow-y-auto pr-2">
                 <h3 class="text-sm font-bold text-slate-800 border-b pb-2">Employee Onboarding Form</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
@@ -142,7 +142,7 @@
                     </div>
                     <div class="sm:col-span-2">
                         <label class="font-semibold text-slate-600">Profile Photo Upload</label>
-                        <input type="file" id="regPhoto" accept="image/*" class="w-full border p-1 rounded mt-0.5 text-xs" onchange="previewFilePhoto(event)">
+                        <input type="file" id="regPhoto" accept="image/*" class="w-full border p-1 rounded mt-0.5 text-xs" onchange="previewFilePhoto(event, 'reg')">
                     </div>
                 </div>
                 <button onclick="handleRegister()" class="w-full bg-idPurple hover:bg-idPurple-dark text-white text-xs font-bold py-2.5 rounded-lg shadow mt-2">
@@ -175,8 +175,8 @@
                 <div class="flex items-center space-x-3 border-l border-slate-700 pl-3">
                     <img id="navPhoto" src="https://ui-avatars.com/api/?name=User" class="w-8 h-8 rounded-full object-cover border border-cnGreen-light">
                     <div class="hidden sm:block text-right">
-                        <p id="navEmpName" class="font-bold text-white leading-none">Inaam Khan</p>
-                        <p id="navEmpRole" class="text-[10px] text-cnGreen-light font-semibold">SUPER_ADMIN</p>
+                        <p id="navEmpName" class="font-bold text-white leading-none">--</p>
+                        <p id="navEmpRole" class="text-[10px] text-cnGreen-light font-semibold">--</p>
                     </div>
                 </div>
 
@@ -224,6 +224,10 @@
             <!-- ADMIN / SUPER ADMIN CONTROLS -->
             <div id="adminMenuGroup" class="pt-3 border-t border-slate-700 mt-2 space-y-1">
                 <p class="text-[10px] font-extrabold text-cnGreen-light uppercase tracking-wider px-3 mb-1">Administrative Controls</p>
+
+                <button onclick="showTab('adminProfileSetup')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-semibold text-slate-200 hover:bg-slate-700">
+                    <i class="fa-solid fa-user-gear w-4 text-amber-400"></i><span>Super Admin Profile Setup</span>
+                </button>
 
                 <button onclick="showTab('adminAnnounce')" class="tab-btn w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-semibold text-slate-200 hover:bg-slate-700">
                     <i class="fa-solid fa-bullhorn w-4 text-cnGreen-light"></i><span>Announcements</span>
@@ -516,7 +520,64 @@
 
             <!-- ADMIN PANELS -->
 
-            <!-- 7. ADMIN ANNOUNCEMENT -->
+            <!-- 7. SUPER ADMIN PROFILE SETUP PANEL -->
+            <div id="adminProfileSetup" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-base font-bold text-cnNavy border-b pb-2"><i class="fa-solid fa-user-gear text-amber-500 mr-2"></i>Super Admin Official Profile Setup</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div>
+                            <label class="font-semibold text-slate-600">Full Name *</label>
+                            <input type="text" id="saName" class="w-full border p-2 rounded mt-0.5" placeholder="Inaam Khan">
+                        </div>
+                        <div>
+                            <label class="font-semibold text-slate-600">Father's Name</label>
+                            <input type="text" id="saFather" class="w-full border p-2 rounded mt-0.5" placeholder="Father Name">
+                        </div>
+                        <div>
+                            <label class="font-semibold text-slate-600">Mother's Name</label>
+                            <input type="text" id="saMother" class="w-full border p-2 rounded mt-0.5" placeholder="Mother Name">
+                        </div>
+                        <div>
+                            <label class="font-semibold text-slate-600">Date of Birth (DOB)</label>
+                            <input type="date" id="saDob" class="w-full border p-2 rounded mt-0.5">
+                        </div>
+                        <div>
+                            <label class="font-semibold text-slate-600">Mobile Number (Login ID)</label>
+                            <input type="text" id="saMobile" class="w-full border p-2 rounded mt-0.5 bg-slate-100" readonly>
+                        </div>
+                        <div>
+                            <label class="font-semibold text-slate-600">Email Address</label>
+                            <input type="email" id="saEmail" class="w-full border p-2 rounded mt-0.5" placeholder="careernestorg@gmail.com">
+                        </div>
+                        <div>
+                            <label class="font-semibold text-slate-600">Designation</label>
+                            <input type="text" id="saDesig" class="w-full border p-2 rounded mt-0.5" placeholder="Super Admin">
+                        </div>
+                        <div>
+                            <label class="font-semibold text-slate-600">Blood Group</label>
+                            <input type="text" id="saBlood" class="w-full border p-2 rounded mt-0.5" placeholder="O+">
+                        </div>
+                        <div>
+                            <label class="font-semibold text-slate-600">Bank Account No.</label>
+                            <input type="text" id="saBankAcc" class="w-full border p-2 rounded mt-0.5" placeholder="Account Number">
+                        </div>
+                        <div>
+                            <label class="font-semibold text-slate-600">IFSC Code</label>
+                            <input type="text" id="saIfsc" class="w-full border p-2 rounded mt-0.5" placeholder="SBIN0001234">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="font-semibold text-slate-600">Upload Profile Photo</label>
+                            <input type="file" id="saPhoto" accept="image/*" class="w-full border p-1 rounded mt-0.5 text-xs" onchange="previewFilePhoto(event, 'sa')">
+                        </div>
+                    </div>
+                    <button onclick="saveSuperAdminProfile()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2.5 px-6 rounded-lg shadow mt-2">
+                        Save Super Admin Profile
+                    </button>
+                </div>
+            </div>
+
+            <!-- 8. ADMIN ANNOUNCEMENT -->
             <div id="adminAnnounce" class="tab-content hidden space-y-6">
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                     <h3 class="text-base font-bold text-cnNavy border-b pb-2"><i class="fa-solid fa-bullhorn text-cnGreen mr-2"></i>Broadcast Announcement</h3>
@@ -527,7 +588,7 @@
                 </div>
             </div>
 
-            <!-- 8. ADMIN SALARY MASTER CONTROL -->
+            <!-- 9. ADMIN SALARY MASTER CONTROL -->
             <div id="adminSalary" class="tab-content hidden space-y-6">
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                     <h3 class="text-base font-bold text-cnNavy border-b pb-2"><i class="fa-solid fa-sliders text-cnGreen mr-2"></i>Set Employee Salary & Target Master</h3>
@@ -565,7 +626,7 @@
                 </div>
             </div>
 
-            <!-- 9. SUPER ADMIN EMPLOYEE DIRECTORY -->
+            <!-- 10. SUPER ADMIN EMPLOYEE DIRECTORY -->
             <div id="employeeList" class="tab-content hidden space-y-6">
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                     <div class="flex justify-between items-center border-b pb-2">
@@ -601,13 +662,14 @@
         function formatDate(date) {
             if (!date) return '--';
             const d = new Date(date);
+            if (isNaN(d.getTime())) return '--';
             const day = String(d.getDate()).padStart(2, '0');
             const month = String(d.getMonth() + 1).padStart(2, '0');
             const year = d.getFullYear();
             return `${day}/${month}/${year}`;
         }
 
-        const SUPER_ADMIN = {
+        const DEFAULT_SUPER_ADMIN = {
             id: '9111319711',
             pass: 'Inaam@786',
             name: 'Inaam Khan',
@@ -615,35 +677,30 @@
             empId: 'CN-SA-001',
             mobile: '9111319711',
             email: 'careernestorg@gmail.com',
-            dob: '1995-08-15',
+            desig: 'Super Admin',
             doj: '2026-01-01',
             expiry: '2027-01-01',
             isSalarySet: true,
             baseSalary: 100000,
             target: 50,
-            completedTarget: 10,
-            incentive: 10000,
-            pf: 1800,
-            esi: 500
+            completedTarget: 0,
+            incentive: 0,
+            pf: 0,
+            esi: 0
         };
 
         let currentUser = null;
         let shiftTimerInterval = null;
         let shiftSeconds = 0;
-        let uploadedPhotoBase64 = null;
+        let uploadedRegPhoto = null;
+        let uploadedSaPhoto = null;
 
+        // WIPEOUT ALL PREVIOUS DUMMY DATA AND INITIALIZE FRESH LOCALSTORAGE
         function initializeCleanData() {
-            if (!localStorage.getItem('cn_users')) {
-                const initialUsers = {};
-                initialUsers[SUPER_ADMIN.id] = {
-                    ...SUPER_ADMIN,
-                    desig: 'Super Admin',
-                    blood: 'O+',
-                    bankAcc: '9111319711001',
-                    photo: `https://ui-avatars.com/api/?name=Inaam+Khan&background=0D8ABC&color=fff`
-                };
-                localStorage.setItem('cn_users', JSON.stringify(initialUsers));
-            }
+            // Always overwrite to wipe pre-filled employees as requested
+            const initialUsers = {};
+            initialUsers[DEFAULT_SUPER_ADMIN.id] = { ...DEFAULT_SUPER_ADMIN };
+            localStorage.setItem('cn_users', JSON.stringify(initialUsers));
         }
 
         initializeCleanData();
@@ -652,11 +709,14 @@
             document.getElementById('liveClock').innerText = new Date().toLocaleString();
         }, 1000);
 
-        function previewFilePhoto(event) {
+        function previewFilePhoto(event, type) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) { uploadedPhotoBase64 = e.target.result; };
+                reader.onload = function(e) {
+                    if (type === 'sa') uploadedSaPhoto = e.target.result;
+                    else uploadedRegPhoto = e.target.result;
+                };
                 reader.readAsDataURL(file);
             }
         }
@@ -697,13 +757,27 @@
             document.getElementById('idFrontName').innerText = currentUser.name;
             document.getElementById('idFrontDesig').innerText = currentUser.desig || 'Executive';
             document.getElementById('idFrontEmpId').innerText = currentUser.empId || 'CN-101';
-            document.getElementById('idFrontBlood').innerText = currentUser.blood || 'O+';
-            document.getElementById('idFrontPhone').innerText = currentUser.mobile || '9111319711';
-            document.getElementById('idFrontEmail').innerText = currentUser.email || 'careernestorg@gmail.com';
+            document.getElementById('idFrontBlood').innerText = currentUser.blood || '--';
+            document.getElementById('idFrontPhone').innerText = currentUser.mobile || '--';
+            document.getElementById('idFrontEmail').innerText = currentUser.email || '--';
 
             document.getElementById('idBackDob').innerText = formatDate(currentUser.dob);
             document.getElementById('idBackDoj').innerText = formatDate(currentUser.doj);
             document.getElementById('idBackExpiry').innerText = formatDate(currentUser.expiry);
+
+            // Populate SA setup form if super admin
+            if (currentUser.role === 'SUPER_ADMIN') {
+                document.getElementById('saName').value = currentUser.name || '';
+                document.getElementById('saFather').value = currentUser.father || '';
+                document.getElementById('saMother').value = currentUser.mother || '';
+                document.getElementById('saDob').value = currentUser.dob || '';
+                document.getElementById('saMobile').value = currentUser.mobile || '';
+                document.getElementById('saEmail').value = currentUser.email || '';
+                document.getElementById('saDesig').value = currentUser.desig || 'Super Admin';
+                document.getElementById('saBlood').value = currentUser.blood || '';
+                document.getElementById('saBankAcc').value = currentUser.bankAcc || '';
+                document.getElementById('saIfsc').value = currentUser.ifsc || '';
+            }
 
             // Targets
             const target = currentUser.target || 100;
@@ -788,8 +862,6 @@
                 email: document.getElementById('regEmail').value,
                 desig: document.getElementById('regDesig').value || 'Executive',
                 blood: document.getElementById('regBlood').value || 'O+',
-                aadhaar: document.getElementById('regAadhaar').value,
-                pan: document.getElementById('regPan').value,
                 address: document.getElementById('regAddress').value,
                 city: document.getElementById('regCity').value,
                 statePin: document.getElementById('regStatePin').value,
@@ -797,7 +869,7 @@
                 ifsc: document.getElementById('regIfsc').value,
                 role: 'EMPLOYEE',
                 empId: newEmpId,
-                photo: uploadedPhotoBase64 || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0D8ABC&color=fff`,
+                photo: uploadedRegPhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0D8ABC&color=fff`,
                 isSalarySet: false, // Default Salary state IS NOT SET
                 baseSalary: 0,
                 target: 100,
@@ -812,12 +884,44 @@
             toggleAuth('login');
         }
 
+        function saveSuperAdminProfile() {
+            const users = JSON.parse(localStorage.getItem('cn_users')) || {};
+            const saMobile = currentUser.mobile || DEFAULT_SUPER_ADMIN.mobile;
+
+            if (users[saMobile]) {
+                users[saMobile].name = document.getElementById('saName').value || currentUser.name;
+                users[saMobile].father = document.getElementById('saFather').value;
+                users[saMobile].mother = document.getElementById('saMother').value;
+                users[saMobile].dob = document.getElementById('saDob').value;
+                users[saMobile].email = document.getElementById('saEmail').value;
+                users[saMobile].desig = document.getElementById('saDesig').value;
+                users[saMobile].blood = document.getElementById('saBlood').value;
+                users[saMobile].bankAcc = document.getElementById('saBankAcc').value;
+                users[saMobile].ifsc = document.getElementById('saIfsc').value;
+                if (uploadedSaPhoto) {
+                    users[saMobile].photo = uploadedSaPhoto;
+                }
+
+                localStorage.setItem('cn_users', JSON.stringify(users));
+                currentUser = users[saMobile];
+                setupDashboardView();
+                alert('Super Admin profile details updated successfully!');
+            }
+        }
+
         function renderEmployeeDirectory() {
             const users = JSON.parse(localStorage.getItem('cn_users')) || {};
             const tbody = document.getElementById('empDirectoryBody');
             tbody.innerHTML = '';
 
-            Object.values(users).forEach(u => {
+            const employeesOnly = Object.values(users).filter(u => u.role === 'EMPLOYEE');
+
+            if (employeesOnly.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">No employees registered yet. Employees will appear here as they sign up.</td></tr>`;
+                return;
+            }
+
+            employeesOnly.forEach(u => {
                 const isSet = u.isSalarySet && u.baseSalary > 0;
                 const salaryBadge = isSet 
                     ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">₹ ${u.baseSalary} (Active)</span>`
